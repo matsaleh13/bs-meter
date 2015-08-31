@@ -40,7 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CharacterAnalyzer.cs" />
+    <Compile Include="CharacterAnalyzerResult.cs" />
     <Compile Include="Interfaces\IAnalyzer.cs" />
+    <Compile Include="Interfaces\IAnalyzerResult.cs" />
     <Compile Include="Interfaces\ICorpus.cs" />
     <Compile Include="Interfaces\IPreprocessor.cs" />
     <Compile Include="Interfaces\IScorer.cs" />
