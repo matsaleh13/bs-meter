@@ -25,29 +25,35 @@ namespace AnalysisLib
                 {
                     var c = reader.Read();
 
-                    ++result.CharacterCount;
+                    ++result.CharacterCount.Count;
 
-                    CharacterCounter currentCounter = null;
+                    IRepeatCounter currentCounter = null;
+                    var currentCharType = CharacterType.Invalid;
 
                     if (char.IsPunctuation((char)c))
                     {
                         currentCounter = result.Punctuation;
+                        currentCharType = CharacterType.Punctuation;
                     }
                     else if (char.IsWhiteSpace((char)c))
                     {
                         currentCounter = result.Whitespace;
+                        currentCharType = CharacterType.Whitespace;
                     }
                     else if (char.IsUpper((char)c))
                     {
                         currentCounter = result.UpperCase;
+                        currentCharType = CharacterType.UpperCase;
                     }
                     else
                     {
                         currentCounter = result.Other;
+                        currentCharType = CharacterType.Other;
                     }
 
-                    currentCounter.Update(lastCharType);
-                    lastCharType = currentCounter.CharType;
+                    currentCounter.Count++;
+                    if (currentCharType == lastCharType) currentCounter.RepeatedCount++;
+
                 }
             }
 
