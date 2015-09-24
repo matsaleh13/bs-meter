@@ -74,7 +74,6 @@
     <Compile Include="CharacterAnalyzerTests.cs" />
     <Compile Include="CharacterCounterTests.cs" />
     <Compile Include="CharacterPercentCounterTests.cs" />
-    <Compile Include="CharacterRepeatCounterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

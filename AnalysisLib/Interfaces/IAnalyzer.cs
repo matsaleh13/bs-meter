@@ -14,16 +14,18 @@ namespace AnalysisLib.Interfaces
         /// The return type is implementation-specific.
         /// </summary>
         /// <param name="data">Unicode string containing data to be analyzed.</param>
+        /// <param name="blockSize">Max number of characters to read at a time.</param>
         /// <returns>Analysis result</returns>
-        IAnalyzerResult Analyze(Stream data);
+        IAnalyzerResult Analyze(Stream data, int blockSize = 1024);
 
 
         /// <summary>
         /// Async wrapper for the Analyze method.
         /// </summary>
         /// <param name="data">Unicode string containing data to be analyzed.</param>
+        /// <param name="blockSize">Max number of characters to read at a time.</param>
         /// <returns>Analysis result</returns>
-        Task<IAnalyzerResult> AnalyzeAsync(Stream data);
+        Task<IAnalyzerResult> AnalyzeAsync(Stream data, int blockSize = 1024);
 
     }
 }

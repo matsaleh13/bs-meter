@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using AnalysisLib.Interfaces;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using AnalysisLib.Interfaces;
 
 namespace AnalysisLib
 {
@@ -13,9 +9,16 @@ namespace AnalysisLib
     /// </summary>
     public class CharacterAnalyzer : IAnalyzer
     {
-        public IAnalyzerResult Analyze(Stream data)
+        /// <summary>
+        /// Synchronous method to analyze the data stream.
+        /// </summary>
+        /// <param name="data">Data stream to analyze.</param>
+        /// <param name="blockSize">Max number of characters to read at a time.</param>
+        /// <returns>Result of the analysis.</returns>
+        public IAnalyzerResult Analyze(Stream data, int blockSize=1024)
         {
             var result = new CharacterAnalyzerResult();
+            var buffer = new char[blockSize];
 
             using (var reader = new StreamReader(data))
             {
@@ -23,46 +26,55 @@ namespace AnalysisLib
 
                 while (!reader.EndOfStream)
                 {
-                    var c = reader.Read();
+                    var count = reader.Read(buffer, 0, blockSize);
 
-                    ++result.CharacterCount.Count;
+                    result.CharacterCount.Increment(count);
 
-                    IRepeatCounter currentCounter = null;
-                    var currentCharType = CharacterType.Invalid;
-
-                    if (char.IsPunctuation((char)c))
+                    for (int ix = 0; ix < count; ++ix)
                     {
-                        currentCounter = result.Punctuation;
-                        currentCharType = CharacterType.Punctuation;
-                    }
-                    else if (char.IsWhiteSpace((char)c))
-                    {
-                        currentCounter = result.Whitespace;
-                        currentCharType = CharacterType.Whitespace;
-                    }
-                    else if (char.IsUpper((char)c))
-                    {
-                        currentCounter = result.UpperCase;
-                        currentCharType = CharacterType.UpperCase;
-                    }
-                    else
-                    {
-                        currentCounter = result.Other;
-                        currentCharType = CharacterType.Other;
-                    }
+                        var c = buffer[ix];
 
-                    currentCounter.Count++;
-                    if (currentCharType == lastCharType) currentCounter.RepeatedCount++;
+                        IRepeatCounter currentCounter = null;
+                        var currentCharType = CharacterType.Invalid;
 
-                }
+                        if (char.IsPunctuation(c))
+                        {
+                            currentCounter = result.Punctuation;
+                            currentCharType = CharacterType.Punctuation;
+                        }
+                        else if (char.IsWhiteSpace(c))
+                        {
+                            currentCounter = result.Whitespace;
+                            currentCharType = CharacterType.Whitespace;
+                        }
+                        else if (char.IsUpper(c))
+                        {
+                            currentCounter = result.UpperCase;
+                            currentCharType = CharacterType.UpperCase;
+                        }
+                        else
+                        {
+                            currentCounter = result.Other;
+                            currentCharType = CharacterType.Other;
+                        }
+
+                        currentCounter.Counter.Increment();
+                        if (currentCharType == lastCharType) currentCounter.RepeatCounter.Increment();
+                    }   // for
+                }   // while
+
             }
 
             return result;
         }
 
-        public async Task<IAnalyzerResult> AnalyzeAsync(Stream data)
-        {
-            return await Task.Run(() => Analyze(data));
-        }
+        /// <summary>
+        /// Asynchronous method to analyze the data stream.
+        /// TODO: Full async internally, calling StreamReader.ReadAsync() or similar.
+        /// </summary>
+        /// <param name="data">Data stream to analyze.</param>
+        /// <param name="blockSize">Max number of characters to read at a time.</param>
+        /// <returns>Result of the analysis.</returns>
+        public async Task<IAnalyzerResult> AnalyzeAsync(Stream data, int blockSize = 1024) => await Task.Run(() => Analyze(data, blockSize));
     }
 }

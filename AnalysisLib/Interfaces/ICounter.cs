@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AnalysisLib.Interfaces
+﻿namespace AnalysisLib.Interfaces
 {
     /// <summary>
     /// A general purpose counter of items.
@@ -14,18 +8,28 @@ namespace AnalysisLib.Interfaces
         /// <summary>
         /// Number of counted items.
         /// </summary>
-        int Count { get; set; }
+        int Count { get; }
 
         /// <summary>
         /// Threadsafe incrementer.
         /// </summary>
         /// <param name="value">Value by which to increment the counter.</param>
         /// <returns>The new value of the counter.</returns>
-        int CountIncrement(int value = 1);
+        int Increment(int value = 1);
 
+        /// <summary>
+        /// Threadsafe decrementer.
+        /// </summary>
+        /// <param name="value">Value by which to decrement the counter.</param>
+        /// <returns>The new value of the counter.</returns>
+        int Decrement(int value = 1);
     }
 
-    public interface IPercentCounter
+    /// <summary>
+    /// A general purpose counter of items that also computes the percentage
+    /// of its count against some other counter.
+    /// </summary>
+    public interface IPercentCounter : ICounter
     {
         /// <summary>
         /// Number of counted items as a percentage of all items.
@@ -33,27 +37,15 @@ namespace AnalysisLib.Interfaces
         float CountPercent { get; }
     }
 
-
     /// <summary>
-    /// A counter of items and repeated occurrances of those items.
+    /// A general purpose counter of items and repeated occurrences of those items.
+    /// It contains two IPercentCounter instances, one for the main count, and another
+    /// for the repeated occurrences.
     /// </summary>
-    public interface IRepeatCounter : ICounter, IPercentCounter
+    public interface IRepeatCounter
     {
-        /// <summary>
-        /// Number of groups of repeated counted items.
-        /// </summary>
-        int RepeatedCount { get; set; }
-
-        /// <summary>
-        /// Threadsafe incrementer.
-        /// </summary>
-        /// <param name="value">Value by which to increment the counter.</param>
-        /// <returns>The new value of the counter.</returns>
-        int RepeatedCountIncrement(int value = 1);
-
-        /// <summary>
-        /// Repeated count as a percentage of all items.
-        /// </summary>
-        float RepeatedCountPercent { get; }
+        IPercentCounter Counter { get; }
+        IPercentCounter RepeatCounter { get; }
     }
+     
 }

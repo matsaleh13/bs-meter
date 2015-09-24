@@ -1,36 +1,72 @@
 ﻿using AnalysisLib.Interfaces;
 using System.Threading;
+using System;
 
 namespace AnalysisLib
 {
+    /// <summary>
+    /// Basic thread-safe counter implmentation using Interlocked.
+    /// Public interface declares int type, but internally we use long because
+    /// of Interlocked.
+    /// </summary>
     public class CharacterCounter : ICounter
     {
-        int _count;
+        long _count;
+
+        public CharacterCounter() { }
+
+        /// <summary>
+        /// Ctor that initalizes the counter to a specific value.
+        /// </summary>
+        /// <param name="count">The intitial value.</param>
+        public CharacterCounter(int count)
+        {
+            _count = count;
+        }
 
         /// <summary>
         /// Number of counted characters.
+        /// Setter is private to avoid non-threadsafe use of ++ operator.
         /// </summary>
         public int Count
         {
             get
             {
-                return _count;
+                // Not required on 64-bit, but we don't know how we'll be running.
+                return (int) Interlocked.Read(ref _count);
             }
 
-            set
+            protected set
             {
-                _count = value;
+                Interlocked.Exchange(ref _count, value);
             }
         }
 
-        public int CountIncrement(int value = 1) => Interlocked.Add(ref _count, value);
+        public int Increment(int value = 1) => (int)Interlocked.Add(ref _count, value);
+
+        public int Decrement(int value = 1) => (int) Interlocked.Add(ref _count, -value);
     }
 
 
-    public class CharacterPercentCounter : CharacterCounter, ICounter, IPercentCounter
+    public class CharacterPercentCounter : CharacterCounter, IPercentCounter
     {
         readonly ICounter _all;
+
+        /// <summary>
+        /// Ctor 
+        /// </summary>
+        /// <param name="all">An ICounter of the basis against which the percentage is calculated.</param>
         public CharacterPercentCounter(ICounter all)
+        {
+            _all = all;
+        }
+
+        /// <summary>
+        /// Ctor that initializes the counter to a specific value.
+        /// </summary>
+        /// <param name="all">An ICounter of the basis against which the percentage is calculated.</param>
+        /// <param name="count">The initial value.</param>
+        public CharacterPercentCounter(ICounter all, int count) : base(count)
         {
             _all = all;
         }
@@ -44,36 +80,16 @@ namespace AnalysisLib
     }
 
 
-    public class CharacterRepeatCounter : CharacterPercentCounter, ICounter, IPercentCounter, IRepeatCounter
+    public class CharacterRepeatCounter : IRepeatCounter
     {
-        readonly CharacterPercentCounter _repeated;
-        public CharacterRepeatCounter(ICounter all) : base(all)
+        public CharacterRepeatCounter(ICounter all)
         {
-            _repeated = new CharacterPercentCounter(all);
+            Counter = new CharacterPercentCounter(all);
+            RepeatCounter = new CharacterPercentCounter(all);
         }
 
-        /// <summary>
-        /// Number of groups of repeated counted characters.
-        /// </summary>
-        public int RepeatedCount
-        {
-            get
-            {
-                return _repeated.Count;
-            }
-
-            set
-            {
-                _repeated.Count = value;
-            }
-        }
-
-        public int RepeatedCountIncrement(int value = 1) => _repeated.CountIncrement(value);
-
-        /// <summary>
-        /// Repeated count as a percentage of all characters.
-        /// </summary>
-        public float RepeatedCountPercent => _repeated.CountPercent;
+        public IPercentCounter Counter { get; }
+        public IPercentCounter RepeatCounter { get; }
     }
 
 }

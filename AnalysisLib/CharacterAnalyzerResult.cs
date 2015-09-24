@@ -16,10 +16,6 @@ namespace AnalysisLib
 
     public class CharacterAnalyzerResult : IAnalyzerResult
     {
-        /// <summary>
-        /// Total number of characters.
-        /// </summary>
-        public ICounter CharacterCount { get; set; }
 
         public CharacterAnalyzerResult()
         {
@@ -30,6 +26,11 @@ namespace AnalysisLib
             UpperCase = new CharacterRepeatCounter(CharacterCount);
             Other = new CharacterRepeatCounter(CharacterCount);
         }
+
+        /// <summary>
+        /// Total number of characters.
+        /// </summary>
+        public ICounter CharacterCount { get; }
 
         public IRepeatCounter Other { get; }
 
