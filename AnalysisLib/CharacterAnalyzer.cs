@@ -9,6 +9,25 @@ namespace AnalysisLib
     /// </summary>
     public class CharacterAnalyzer : IAnalyzer
     {
+        private CharacterType AnalyzeBuffer(char[] buffer, int count, CharacterAnalyzerResult result, CharacterType lastCharType)
+        {
+            result.CharacterCount.Increment(count);
+
+            for (int ix = 0; ix < count; ++ix)
+            {
+                var c = buffer[ix];
+
+                var currentCharType = CharacterTypeUtils.GetCharType(c);
+                var currentCounter = result.GetCounter(currentCharType);
+
+                currentCounter.Counter.Increment();
+                if (currentCharType == lastCharType) currentCounter.RepeatCounter.Increment();
+
+                lastCharType = currentCharType;
+            }   // for
+
+            return lastCharType;
+        }
 
         /// <summary>
         /// Synchronous method to analyze the data stream.
@@ -29,23 +48,8 @@ namespace AnalysisLib
                 {
                     var count = reader.Read(buffer, 0, blockSize);
 
-                    result.CharacterCount.Increment(count);
-
-                    for (int ix = 0; ix < count; ++ix)
-                    {
-                        var c = buffer[ix];
-
-                        var currentCharType = CharacterTypeUtils.GetCharType(c);
-                        var currentCounter = result.GetCounter(currentCharType);
-
-                        currentCounter.Counter.Increment();
-                        if (currentCharType == lastCharType) currentCounter.RepeatCounter.Increment();
-
-                        lastCharType = currentCharType;
-                    }   // for
-
-                }   // while
-
+                    lastCharType = AnalyzeBuffer(buffer, count, result, lastCharType);
+                }   
             }
 
             return result;
@@ -53,7 +57,6 @@ namespace AnalysisLib
 
         /// <summary>
         /// Asynchronous method to analyze the data stream.
-        /// TODO: More DRY here please.
         /// </summary>
         /// <param name="data">Data stream to analyze.</param>
         /// <param name="blockSize">Max number of characters to read at a time.</param>
@@ -71,23 +74,8 @@ namespace AnalysisLib
                 {
                     var count = await reader.ReadAsync(buffer, 0, blockSize).ConfigureAwait(false);
 
-                    result.CharacterCount.Increment(count);
-
-                    for (int ix = 0; ix < count; ++ix)
-                    {
-                        var c = buffer[ix];
-
-                        var currentCharType = CharacterTypeUtils.GetCharType(c);
-                        var currentCounter = result.GetCounter(currentCharType);
-
-                        currentCounter.Counter.Increment();
-                        if (currentCharType == lastCharType) currentCounter.RepeatCounter.Increment();
-
-                        lastCharType = currentCharType;
-                    }   // for
-
-                }   // while
-
+                    lastCharType = AnalyzeBuffer(buffer, count, result, lastCharType);
+                }   
             }
 
             return result;
