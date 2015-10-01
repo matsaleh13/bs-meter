@@ -42,14 +42,16 @@
   <ItemGroup>
     <Compile Include="CharacterAnalyzer.cs" />
     <Compile Include="CharacterAnalyzerResult.cs" />
+    <Compile Include="CharacterScoreCalculator.cs" />
     <Compile Include="Interfaces\IAnalyzer.cs" />
     <Compile Include="Interfaces\IAnalyzerResult.cs" />
     <Compile Include="Interfaces\ICorpus.cs" />
     <Compile Include="Interfaces\ICounter.cs" />
+    <Compile Include="Interfaces\IDocument.cs" />
     <Compile Include="Interfaces\IPreprocessor.cs" />
-    <Compile Include="Interfaces\IScorer.cs" />
+    <Compile Include="Interfaces\IScoreCalculator.cs" />
     <Compile Include="Interfaces\ITrainer.cs" />
-    <Compile Include="Interfaces\IScoreAggregator.cs" />
+    <Compile Include="Interfaces\IScoreKeeper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
