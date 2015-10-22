@@ -8,25 +8,20 @@ using System.Threading.Tasks;
 namespace DataAccess.Interfaces
 {
     public interface IRepository<TEntity>
+        where TEntity : IEntity
     {
-        IQueryable<TEntity> Query();
-        IEnumerable<TEntity> Find(Func<TEntity, bool> exp);
-        TEntity FirstOrDefault(Func<TEntity, bool> exp);
-
+        TEntity Get(TEntity entity);
         void Delete(TEntity entity);
         void Add(TEntity entity);
-        void Save();
     }
 
-    public interface IRepositoryAsync<TEntity>
-    {
-        IQueryable<TEntity> QueryAsync();
-        IEnumerable<TEntity> FindAsync(Func<TEntity, bool> exp);
-        TEntity FirstOrDefaultAsync(Func<TEntity, bool> exp);
 
+    public interface IRepositoryAsync<TEntity>
+        where TEntity : IEntity
+    {
+        Task<TEntity> GetAsync(TEntity entity);
         void DeleteAsync(TEntity entity);
         void AddAsync(TEntity entity);
-        void SaveAsync();
     }
 
 }

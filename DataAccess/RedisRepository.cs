@@ -3,46 +3,45 @@ using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DataAccess
 {
     public abstract class RedisRepositoryAsync<TEntity> : IRepositoryAsync<TEntity>
+        where TEntity : IEntity, new()
     {
+        IConnectionMultiplexer _conn;
         IDatabase _db;
 
-        protected RedisRepositoryAsync(IDatabase db)
+        protected RedisRepositoryAsync(IConnectionMultiplexer conn)
         {
-            _db = db;
+            _conn = conn;
+            _db = _conn.GetDatabase();
         }
 
-        public IQueryable<TEntity> QueryAsync()
+        async public Task<TEntity> GetAsync(TEntity query)
         {
-            throw new NotImplementedException();
+            var hashEntries = await _db.HashGetAllAsync(query.ToRedisKey()).ConfigureAwait(false);
+            var entity = RedisEntityMapper<TEntity>.ToEntity(query.ToRedisKey(), hashEntries);
+            return entity;
         }
 
-        public IEnumerable<TEntity> FindAsync(Func<TEntity, bool> exp)
+        async public void AddAsync(TEntity entity)
         {
-            throw new NotImplementedException();
+            var hashEntries = RedisEntityMapper<TEntity>.ToHashEntries(entity);
+
+            // TODO: create key.
+            await _db.HashSetAsync(entity.ToRedisKey(), hashEntries).ConfigureAwait(false);
         }
 
-        public TEntity FirstOrDefaultAsync(Func<TEntity, bool> exp)
+        async public void DeleteAsync(TEntity entity)
         {
-            throw new NotImplementedException();
-        }
-
-        public void AddAsync(TEntity entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void DeleteAsync(TEntity entity)
-        {
-            throw new NotImplementedException();
+            await _db.KeyDeleteAsync(entity.ToRedisKey());
         }
 
         public void SaveAsync()
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

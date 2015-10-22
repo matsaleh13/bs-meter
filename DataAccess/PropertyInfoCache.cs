@@ -8,7 +8,7 @@ namespace DataAccess
     /// Responsible for caching the PropertyInfo objects describing properties of type T.
     /// </summary>
     /// <typeparam name="T">The type from which the PropertyInfo objects are retrieved.</typeparam>
-    internal static class PropertyInfoCache<T>
+    static class PropertyInfoCache<T>
     {
         public static readonly Dictionary<string, PropertyInfo> Value;
 
