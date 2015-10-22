@@ -99,6 +99,7 @@
     <Compile Include="PropertyInfoCacheTests.cs" />
     <Compile Include="RedisExtensionsTests.cs" />
     <Compile Include="RedisRepositoryAsyncTests.cs" />
+    <Compile Include="TestModels.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

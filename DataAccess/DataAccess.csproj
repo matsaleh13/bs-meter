@@ -68,6 +68,7 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataAccessException.cs" />
     <Compile Include="RedisExtensions.cs" />
     <Compile Include="RedisEntityMapper.cs" />
     <Compile Include="Interfaces\IEntity.cs" />

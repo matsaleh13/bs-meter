@@ -10,8 +10,10 @@ namespace DataAccess.Interfaces
     public interface IRepository<TEntity>
         where TEntity : IEntity
     {
+        TEntity Get(string key);
         TEntity Get(TEntity entity);
-        void Delete(TEntity entity);
+        bool Delete(string key);
+        bool Delete(TEntity entity);
         void Add(TEntity entity);
     }
 
@@ -19,8 +21,10 @@ namespace DataAccess.Interfaces
     public interface IRepositoryAsync<TEntity>
         where TEntity : IEntity
     {
+        Task<TEntity> GetAsync(string key);
         Task<TEntity> GetAsync(TEntity entity);
-        void DeleteAsync(TEntity entity);
+        Task<bool> DeleteAsync(string key);
+        Task<bool> DeleteAsync(TEntity entity);
         void AddAsync(TEntity entity);
     }
 

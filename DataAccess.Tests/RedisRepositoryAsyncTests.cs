@@ -1,74 +1,162 @@
 ﻿using DataAccess.Interfaces;
 using NUnit.Framework;
+using StackExchange.Redis.Extensions.Core;
+using StackExchange.Redis.Extensions.Jil;
+using StackExchange.Redis.Extensions.Newtonsoft;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using System;
-using StackExchange.Redis;
 
 namespace DataAccess.Tests
 {
     [TestFixture]
-    public class RedisRepositoryAsyncTests
+    public abstract class RedisRepositoryAsyncTests
     {
-        #region Model
-
-        class TestEntity : IEntity
+        class PersonRepositoryAsync : RedisRepositoryAsync<PersonWithAddress>
         {
-            public string Key { set; get; }
-
-            public string Name { set; get; }
-            public string Desc { set; get; }
+            public PersonRepositoryAsync(ICacheClient client)
+                : base(client)
+            {
+            }
         }
 
-        readonly string TestKey0 = "tk0";
+        ICacheClient _client;
+        IRepositoryAsync<PersonWithAddress> _repository;
+
+        protected abstract ISerializer GetSerializer();
+
+        #region Data
+        readonly string Person0 = "test-person-key-0";
+        readonly string Person1 = "test-person-key-1";
+        readonly string Person2 = "test-person-key-2";
+
+        readonly SortedSet<string> _keys = new SortedSet<string>();
         #endregion
 
-        //ConnectionMultiplexer _redis;
+        [TestFixtureSetUp]
+        public void OneTimeSetUp()
+        {
+            var serializer = GetSerializer();
+            _client = new StackExchangeRedisCacheClient(serializer);
+        }
 
-        //[TestFixtureSetUp]
-        //public void OneTimeSetUp()
-        //{
-        //    ConfigurationOptions options = 
-        //    _redis = ConnectionMultiplexer.Connect("localhost");
-        //}
+        [TestFixtureTearDown]
+        public void OneTimeTearDown()
+        {
+            _client.Dispose();
+        }
 
-        //[TestFixtureTearDown]
-        //public void OneTimeTearDown()
-        //{
-        //    _redis.Dispose();
-        //    _redis = null;
-        //}
+        [SetUp]
+        public void SetUp()
+        {
+            _keys.Add(Person0);
+            _keys.Add(Person1);
+            _keys.Add(Person2);
 
+            _client.RemoveAll(_keys);
 
-        //[Test]
-        //public void GetAsyncTest()
-        //{
-        //    var entity = new TestEntity()
-        //    {
-        //        Key = TestKey0,
-        //        Name = "foo",
-        //        Desc = "This is a foo."
-        //    };
+            _repository = new PersonRepositoryAsync(_client);
+        }
 
-        //    Task.Run(async () => { await } );
-        //    Assert.Fail();
-        //}
+        [TearDown]
+        public void TearDown()
+        {
+            _repository = null;
+        }
 
-        //[Test]
-        //public void AddAsyncTest()
-        //{
-        //    Assert.Fail();
-        //}
+        [Test]
+        public void GetAsyncByKeyTest()
+        {
+            // Nothing with that key.
+            var result = Task.Run(async () => { return await _repository.GetAsync(Person0).ConfigureAwait(false); });
 
-        //[Test]
-        //public void DeleteAsyncTest()
-        //{
-        //    Assert.Fail();
-        //}
+            Assert.IsNull(result.Result);
 
-        //[Test]
-        //public void SaveAsyncTest()
-        //{
-        //    Assert.Fail();
-        //}
+            // Add it
+            var person = new PersonWithAddress
+            {
+                Key = Person0,
+                Name = "Matt",
+                Age = 51,
+                Address = new Address
+                {
+                    Line1 = "1234 Anywhere Street",
+                    Line2 = "",
+                    City = "Anywhere",
+                    State = "WA",
+                    Zip = "12345"
+                }
+            };
+
+            _client.Add(person.Key, person);    // sync, for grins
+
+            // Now get it again
+            result = Task.Run(async () => { return await _repository.GetAsync(Person0).ConfigureAwait(false); });
+            var added = result.Result;
+
+            Assert.IsNotNull(added);
+            Assert.AreEqual(person, added);
+        }
+
+        [Test]
+        public void GetAsyncByEntityTest()
+        {
+            // Add it
+            var person = new PersonWithAddress
+            {
+                Key = Person0,
+                Name = "Matt",
+                Age = 51,
+                Address = new Address
+                {
+                    Line1 = "1234 Anywhere Street",
+                    Line2 = "",
+                    City = "Anywhere",
+                    State = "WA",
+                    Zip = "12345"
+                }
+            };
+
+            // Nothing with that key.
+            var result = Task.Run(async () => { return await _repository.GetAsync(person).ConfigureAwait(false); });
+            Assert.IsNull(result.Result);
+
+            _client.Add(person.Key, person);    // sync, for grins
+
+            // Now get it again
+            result = Task.Run(async () => { return await _repository.GetAsync(person).ConfigureAwait(false); });
+            var added = result.Result;
+
+            Assert.IsNotNull(added);
+            Assert.AreEqual(person, added);
+        }
+
+        [Test]
+        public void AddAsyncTest()
+        {
+            Assert.Fail();
+        }
+
+        [Test]
+        public void DeleteAsyncByKeyTest()
+        {
+            Assert.Fail();
+        }
+
+        [Test]
+        public void DeleteAsyncByEntityTest()
+        {
+            Assert.Fail();
+        }
     }
+
+    public class RedisRepositoryAsyncJilTests : RedisRepositoryAsyncTests
+    {
+        protected override ISerializer GetSerializer() => new JilSerializer();
+    }
+
+    public class RedisRepositoryAsyncNewtonsoftTests : RedisRepositoryAsyncTests
+    {
+        protected override ISerializer GetSerializer() => new NewtonsoftSerializer();
+    }
+
 }

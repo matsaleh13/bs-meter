@@ -1,47 +1,67 @@
 ﻿using DataAccess.Interfaces;
 using StackExchange.Redis;
+using StackExchange.Redis.Extensions.Core;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DataAccess
 {
     public abstract class RedisRepositoryAsync<TEntity> : IRepositoryAsync<TEntity>
-        where TEntity : IEntity, new()
+        where TEntity : class, IEntity, new()
     {
-        IConnectionMultiplexer _conn;
-        IDatabase _db;
+        ICacheClient _client;
 
-        protected RedisRepositoryAsync(IConnectionMultiplexer conn)
+        protected void CheckEntityParam(TEntity entity)
         {
-            _conn = conn;
-            _db = _conn.GetDatabase();
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            if (string.IsNullOrEmpty(entity.Key))
+            {
+                throw new ArgumentNullException(nameof(entity), "entity.Key is null or empty.");
+            }
         }
 
-        async public Task<TEntity> GetAsync(TEntity query)
+
+        protected RedisRepositoryAsync(ICacheClient client)
         {
-            var hashEntries = await _db.HashGetAllAsync(query.ToRedisKey()).ConfigureAwait(false);
-            var entity = RedisEntityMapper<TEntity>.ToEntity(query.ToRedisKey(), hashEntries);
+            _client = client;
+        }
+
+        async public Task<TEntity> GetAsync(string key)
+        {
+            var entity = await _client.GetAsync<TEntity>(key).ConfigureAwait(false);
             return entity;
+        }
+
+        async public Task<TEntity> GetAsync(TEntity entity)
+        {
+            CheckEntityParam(entity);
+            return await GetAsync(entity.Key).ConfigureAwait(false);
         }
 
         async public void AddAsync(TEntity entity)
         {
-            var hashEntries = RedisEntityMapper<TEntity>.ToHashEntries(entity);
-
-            // TODO: create key.
-            await _db.HashSetAsync(entity.ToRedisKey(), hashEntries).ConfigureAwait(false);
+            CheckEntityParam(entity);
+            await _client.AddAsync(entity.Key, entity).ConfigureAwait(false);
         }
 
-        async public void DeleteAsync(TEntity entity)
+        async public Task<bool> DeleteAsync(string key)
         {
-            await _db.KeyDeleteAsync(entity.ToRedisKey());
+            return await _client.RemoveAsync(key);
         }
 
-        public void SaveAsync()
+        async public Task<bool> DeleteAsync(TEntity entity)
         {
-            
+            CheckEntityParam(entity);
+            return await _client.RemoveAsync(entity.Key);
+        }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
         }
     }
 }
