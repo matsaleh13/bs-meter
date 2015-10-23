@@ -42,10 +42,10 @@ namespace DataAccess
             return await GetAsync(entity.Key).ConfigureAwait(false);
         }
 
-        async public void AddAsync(TEntity entity)
+        async public Task<bool> AddAsync(TEntity entity)
         {
             CheckEntityParam(entity);
-            await _client.AddAsync(entity.Key, entity).ConfigureAwait(false);
+            return await _client.AddAsync(entity.Key, entity).ConfigureAwait(false);
         }
 
         async public Task<bool> DeleteAsync(string key)
@@ -57,11 +57,6 @@ namespace DataAccess
         {
             CheckEntityParam(entity);
             return await _client.RemoveAsync(entity.Key);
-        }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
         }
     }
 }

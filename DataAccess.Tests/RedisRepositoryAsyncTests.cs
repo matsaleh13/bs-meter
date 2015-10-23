@@ -8,15 +8,11 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Tests
 {
-    [TestFixture]
     public abstract class RedisRepositoryAsyncTests
     {
         class PersonRepositoryAsync : RedisRepositoryAsync<PersonWithAddress>
         {
-            public PersonRepositoryAsync(ICacheClient client)
-                : base(client)
-            {
-            }
+            public PersonRepositoryAsync(ICacheClient client) : base(client) {}
         }
 
         ICacheClient _client;
@@ -36,6 +32,8 @@ namespace DataAccess.Tests
         public void OneTimeSetUp()
         {
             var serializer = GetSerializer();
+
+            // Configured via app.config
             _client = new StackExchangeRedisCacheClient(serializer);
         }
 
@@ -133,27 +131,112 @@ namespace DataAccess.Tests
         [Test]
         public void AddAsyncTest()
         {
-            Assert.Fail();
+            // Add it
+            var person = new PersonWithAddress
+            {
+                Key = Person0,
+                Name = "Matt",
+                Age = 51,
+                Address = new Address
+                {
+                    Line1 = "1234 Anywhere Street",
+                    Line2 = "",
+                    City = "Anywhere",
+                    State = "WA",
+                    Zip = "12345"
+                }
+            };
+
+            var result = Task.Run(async () => { return await _repository.AddAsync(person).ConfigureAwait(false); });
+            Assert.IsTrue(result.Result);
+
+            // Get the data
+            var added = _client.Get<PersonWithAddress>(Person0);
+
+            Assert.IsNotNull(added);
+            Assert.AreEqual(person, added);
         }
 
         [Test]
         public void DeleteAsyncByKeyTest()
         {
-            Assert.Fail();
+            // Nothing with that key.
+            var result = Task.Run(async () => { return await _repository.DeleteAsync(Person0).ConfigureAwait(false); });
+
+            Assert.IsFalse(result.Result);
+
+            // Add it
+            var person = new PersonWithAddress
+            {
+                Key = Person0,
+                Name = "Matt",
+                Age = 51,
+                Address = new Address
+                {
+                    Line1 = "1234 Anywhere Street",
+                    Line2 = "",
+                    City = "Anywhere",
+                    State = "WA",
+                    Zip = "12345"
+                }
+            };
+
+            _client.Add(person.Key, person);    // sync, for grins
+
+            // Now delete it again
+            result = Task.Run(async () => { return await _repository.DeleteAsync(Person0).ConfigureAwait(false); });
+            var deleted = result.Result;
+
+            Assert.IsTrue(deleted);
         }
 
         [Test]
         public void DeleteAsyncByEntityTest()
         {
-            Assert.Fail();
+            // Key
+            var personToDelete = new PersonWithAddress
+            {
+                Key = Person0,
+            };
+
+            // Nothing with that key.
+            var result = Task.Run(async () => { return await _repository.DeleteAsync(personToDelete).ConfigureAwait(false); });
+
+            Assert.IsFalse(result.Result);
+
+            // Add it
+            var person = new PersonWithAddress
+            {
+                Key = Person0,
+                Name = "Matt",
+                Age = 51,
+                Address = new Address
+                {
+                    Line1 = "1234 Anywhere Street",
+                    Line2 = "",
+                    City = "Anywhere",
+                    State = "WA",
+                    Zip = "12345"
+                }
+            };
+
+            _client.Add(person.Key, person);    // sync, for grins
+
+            // Now delete it again
+            result = Task.Run(async () => { return await _repository.DeleteAsync(personToDelete).ConfigureAwait(false); });
+            var deleted = result.Result;
+
+            Assert.IsTrue(deleted);
         }
     }
 
+    [TestFixture]
     public class RedisRepositoryAsyncJilTests : RedisRepositoryAsyncTests
     {
         protected override ISerializer GetSerializer() => new JilSerializer();
     }
 
+    [TestFixture]
     public class RedisRepositoryAsyncNewtonsoftTests : RedisRepositoryAsyncTests
     {
         protected override ISerializer GetSerializer() => new NewtonsoftSerializer();

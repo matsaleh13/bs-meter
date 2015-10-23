@@ -12,9 +12,9 @@ namespace DataAccess.Interfaces
     {
         TEntity Get(string key);
         TEntity Get(TEntity entity);
+        bool Add(TEntity entity);
         bool Delete(string key);
         bool Delete(TEntity entity);
-        void Add(TEntity entity);
     }
 
 
@@ -23,9 +23,9 @@ namespace DataAccess.Interfaces
     {
         Task<TEntity> GetAsync(string key);
         Task<TEntity> GetAsync(TEntity entity);
+        Task<bool> AddAsync(TEntity entity);
         Task<bool> DeleteAsync(string key);
         Task<bool> DeleteAsync(TEntity entity);
-        void AddAsync(TEntity entity);
     }
 
 }
