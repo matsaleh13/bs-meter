@@ -48,7 +48,7 @@ namespace AnalysisLib
     }
 
 
-    public class CharacterPercentCounter : CharacterCounter, IPercentCounter
+    public class CharacterPercentCounter : CharacterCounter, IFrequencyCounter
     {
         readonly ICounter _all;
 
@@ -74,7 +74,7 @@ namespace AnalysisLib
         /// <summary>
         /// Number of counted characters as a percentage of all characters.
         /// </summary>
-        public float CountPercent => PercentOfCharacterCount(Count);
+        public float Frequency => PercentOfCharacterCount(Count);
 
         protected float PercentOfCharacterCount(int count) => count == 0 ? 0 : (float)count / _all.Count * 100.0f;
     }
@@ -88,8 +88,8 @@ namespace AnalysisLib
             RepeatCounter = new CharacterPercentCounter(all);
         }
 
-        public IPercentCounter Counter { get; }
-        public IPercentCounter RepeatCounter { get; }
+        public IFrequencyCounter Counter { get; }
+        public IFrequencyCounter RepeatCounter { get; }
     }
 
 }
