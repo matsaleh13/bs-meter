@@ -16,33 +16,33 @@ namespace AnalysisLib.Tests
             result.Punctuation.RepeatCounter.Increment(2);
 
             Assert.AreEqual(10, result.Punctuation.Counter.Count);
-            Assert.AreEqual(10.0f, result.Punctuation.Counter.CountPercent);
+            Assert.AreEqual(10.0f, result.Punctuation.Counter.Frequency);
             Assert.AreEqual(2, result.Punctuation.RepeatCounter.Count);
-            Assert.AreEqual(2.0f, result.Punctuation.RepeatCounter.CountPercent);
+            Assert.AreEqual(2.0f, result.Punctuation.RepeatCounter.Frequency);
 
             result.Whitespace.Counter.Increment(10);
             result.Whitespace.RepeatCounter.Increment(2);
 
             Assert.AreEqual(10, result.Whitespace.Counter.Count);
-            Assert.AreEqual(10.0f, result.Whitespace.Counter.CountPercent);
+            Assert.AreEqual(10.0f, result.Whitespace.Counter.Frequency);
             Assert.AreEqual(2, result.Whitespace.RepeatCounter.Count);
-            Assert.AreEqual(2.0f, result.Whitespace.RepeatCounter.CountPercent);
+            Assert.AreEqual(2.0f, result.Whitespace.RepeatCounter.Frequency);
 
             result.UpperCase.Counter.Increment(10);
             result.UpperCase.RepeatCounter.Increment(2);
 
             Assert.AreEqual(10, result.UpperCase.Counter.Count);
-            Assert.AreEqual(10.0f, result.UpperCase.Counter.CountPercent);
+            Assert.AreEqual(10.0f, result.UpperCase.Counter.Frequency);
             Assert.AreEqual(2, result.UpperCase.RepeatCounter.Count);
-            Assert.AreEqual(2.0f, result.UpperCase.RepeatCounter.CountPercent);
+            Assert.AreEqual(2.0f, result.UpperCase.RepeatCounter.Frequency);
 
             result.Other.Counter.Increment(10);
             result.Other.RepeatCounter.Increment(2);
 
             Assert.AreEqual(10, result.Other.Counter.Count);
-            Assert.AreEqual(10.0f, result.Other.Counter.CountPercent);
+            Assert.AreEqual(10.0f, result.Other.Counter.Frequency);
             Assert.AreEqual(2, result.Other.RepeatCounter.Count);
-            Assert.AreEqual(2.0f, result.Other.RepeatCounter.CountPercent);
+            Assert.AreEqual(2.0f, result.Other.RepeatCounter.Frequency);
         }
 
     }

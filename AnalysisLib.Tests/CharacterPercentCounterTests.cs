@@ -24,13 +24,13 @@ namespace AnalysisLib.Tests
             _counter.Increment();
 
             var percentCounter = (CharacterPercentCounter)_counter;
-            Assert.AreEqual(30.0f, percentCounter.CountPercent);
+            Assert.AreEqual(30.0f, percentCounter.Frequency);
 
             _counter.Increment(10);
-            Assert.AreEqual(130.0f, percentCounter.CountPercent);
+            Assert.AreEqual(130.0f, percentCounter.Frequency);
 
             _counter.Decrement(5);
-            Assert.AreEqual(80.0f, percentCounter.CountPercent);
+            Assert.AreEqual(80.0f, percentCounter.Frequency);
         }
 
     }
