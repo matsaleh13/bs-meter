@@ -1,1 +1,1 @@
-docker start bs-meter-redis
+docker start bs-meter-redis-0
