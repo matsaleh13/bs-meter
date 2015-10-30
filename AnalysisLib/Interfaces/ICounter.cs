@@ -26,15 +26,15 @@
     }
 
     /// <summary>
-    /// A general purpose counter of items that also computes the percentage
-    /// of its count against some other counter.
+    /// A general purpose counter that computes the frequency 
+    /// of its count against some other counter as a percentage.
     /// </summary>
-    public interface IPercentCounter : ICounter
+    public interface IFrequencyCounter : ICounter
     {
         /// <summary>
-        /// Number of counted items as a percentage of all items.
+        /// Frequency of items as a percentage of all items.
         /// </summary>
-        float CountPercent { get; }
+        float Frequency { get; }
     }
 
     /// <summary>
@@ -44,8 +44,8 @@
     /// </summary>
     public interface IRepeatCounter
     {
-        IPercentCounter Counter { get; }
-        IPercentCounter RepeatCounter { get; }
+        IFrequencyCounter Counter { get; }
+        IFrequencyCounter RepeatCounter { get; }
     }
      
 }
