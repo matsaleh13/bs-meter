@@ -96,7 +96,6 @@
   <ItemGroup>
     <Compile Include="CloudStructuresTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyInfoCacheTests.cs" />
     <Compile Include="RedisExtensionsTests.cs" />
     <Compile Include="RedisRepositoryAsyncTests.cs" />
     <Compile Include="TestModels.cs" />

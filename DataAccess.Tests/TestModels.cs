@@ -14,7 +14,7 @@ namespace DataAccess.Tests
     // a class
     public class Person : IPerson
     {
-        public string Key { get; set; }
+        public Key Key { get; set; }
 
         public string Name { get; set; }
 
@@ -75,7 +75,7 @@ namespace DataAccess.Tests
             Address = new Address();
         }
 
-        public string Key { get; set; }
+        public Key Key { get; set; }
 
         public string Name { get; set; }
 

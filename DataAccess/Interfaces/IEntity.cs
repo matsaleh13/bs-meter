@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DataAccess;
 
 namespace DataAccess.Interfaces
 {
     public interface IEntity
     {
-        string Key { get; set; }  
+        Key Key { get; }  
     }
 }
