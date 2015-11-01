@@ -13,6 +13,18 @@ namespace Common.Tests
         const string _validContents3 = "QUOTED_STRING=\"this is a quoted string\"";
         const string _validContents4 = "REDIS_HOST =192.168.99.200";
         const string _validContents5 = "REDIS_HOST= 192.168.99.200";
+        const string _validContents6 = @"
+            REDIS_HOST1=192.168.99.200
+            REDIS_HOST2=192.168.99.201
+            REDIS_HOST3=192.168.99.202
+        ";
+        const string _validContents7 = @"
+            # This is a comment
+            REDIS_HOST1=192.168.99.200
+            REDIS_HOST2=192.168.99.201  # This is another comment
+            REDIS_HOST3=192.168.99.202
+        ";
+
 
         const string _invalidFile = "invalid.env";
         const string _invalidContents1 = "REDIS_HOST";
@@ -49,6 +61,8 @@ namespace Common.Tests
         [TestCase(_validFile, _validContents3)]
         [TestCase(_validFile, _validContents4)]
         [TestCase(_validFile, _validContents5)]
+        [TestCase(_validFile, _validContents6)]
+        [TestCase(_validFile, _validContents7)]
         public void LoadTest(string path, string contents)
         {
             CreateFile(path, contents);
@@ -56,14 +70,27 @@ namespace Common.Tests
 
             var allvars = Environment.GetEnvironmentVariables();
 
-            var parsed = contents.Split(new char[] { '=' }, 2);
-            var name = parsed[0].Trim();
-            var value = parsed[1].Trim();
+            var lines = contents.Split(new string[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-            var envvar = Environment.GetEnvironmentVariable(name);
-            Assert.IsNotNull(envvar);
+            foreach (var rawline in lines)
+            {
+                var line = rawline;
 
-            Assert.AreEqual(value, envvar);
+                // Strip comments
+                var commentPos = line.IndexOf("#", StringComparison.Ordinal);
+                if (commentPos >= 0) line = line.Remove(commentPos);
+
+                if (string.IsNullOrWhiteSpace(line)) continue;
+
+                var parsed = line.Trim().Split(new char[] { '=' }, 2);
+                var name = parsed[0].Trim();
+                var value = parsed[1].Trim();
+
+                var envvar = Environment.GetEnvironmentVariable(name);
+                Assert.IsNotNull(envvar);
+
+                Assert.AreEqual(value, envvar);
+            }
         }
 
         [TestCase(_invalidFile, _invalidContents1)]
