@@ -1,4 +1,5 @@
-﻿using DataAccess.Interfaces;
+﻿using Common;
+using DataAccess.Interfaces;
 using NUnit.Framework;
 using StackExchange.Redis.Extensions.Core;
 using StackExchange.Redis.Extensions.Jil;
@@ -34,7 +35,8 @@ namespace DataAccess.Tests
             var serializer = GetSerializer();
 
             // Configured via app.config
-            _client = new StackExchangeRedisCacheClient(serializer);
+            var conn = GlobalConfig.Instance.Corpus.RedisConnection;
+            _client = new StackExchangeRedisCacheClient(serializer, conn);
         }
 
         [TestFixtureTearDown]
