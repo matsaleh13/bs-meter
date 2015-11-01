@@ -11,8 +11,8 @@ namespace Common.Tests
             var config = new GlobalConfig();
            
             Assert.IsNotNull(config.Corpus);
-            Assert.IsNotNullOrEmpty(config.Corpus.Redis.ConnectionString);
-            Assert.AreEqual("{HOST}:6379,allowAdmin=true,ssl=false,connectTimeout=5000,database=0,password=null", config.Corpus.Redis.ConnectionString);
+            Assert.IsNotNullOrEmpty(config.Corpus.RedisConnection);
+            Assert.AreEqual("{HOST}:6379,allowAdmin=true,ssl=false,connectTimeout=5000,database=0,password=null", config.Corpus.RedisConnection);
         }
 
         [Test]
@@ -21,8 +21,8 @@ namespace Common.Tests
             var config = GlobalConfig.Instance;
 
             Assert.IsNotNull(config.Corpus);
-            Assert.IsNotNullOrEmpty(config.Corpus.Redis.ConnectionString);
-            Assert.AreEqual("{HOST}:6379,allowAdmin=true,ssl=false,connectTimeout=5000,database=0,password=null", config.Corpus.Redis.ConnectionString);
+            Assert.IsNotNullOrEmpty(config.Corpus.RedisConnection);
+            Assert.AreEqual("{HOST}:6379,allowAdmin=true,ssl=false,connectTimeout=5000,database=0,password=null", config.Corpus.RedisConnection);
 
             Assert.AreSame(config, GlobalConfig.Instance);
             Assert.AreNotSame(config, new GlobalConfig());

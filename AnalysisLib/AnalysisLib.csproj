@@ -42,6 +42,10 @@
       <HintPath>..\packages\Stanford.NLP.Parser.3.5.2\lib\ejml-0.23.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Formo, Version=1.4.4.40853, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Formo.1.4.4.40853\lib\net40\Formo.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="IKVM.AWT.WinForms, Version=8.0.5449.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>..\packages\IKVM.8.0.5449.1\lib\IKVM.AWT.WinForms.dll</HintPath>
       <Private>True</Private>

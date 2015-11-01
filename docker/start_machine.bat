@@ -11,5 +11,13 @@ docker-machine env --shell cmd %MACHINE% | grep -v # > %MACHINE%.bat
 REM Set the env variables in the env.
 CALL %MACHINE%.bat
 
-REM Get the IP address and store it in a file
-docker-machine ip %MACHINE% > %MACHINE%-address.txt
+REM Get the IP address and store it in an environment file
+REM NOTE: This is a really ugly hack (IMO)
+TEMPFILE=%MACHINE%-ip.tmp
+docker-machine ip %MACHINE% > %TEMPFILE%
+SET /p REDIS_HOST=<%TEMPFILE%
+DEL %TEMPFILE%
+
+ECHO REDIS_HOST=%REDIS_HOST% > corpus.env
+
+

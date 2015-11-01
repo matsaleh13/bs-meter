@@ -1,5 +1,6 @@
 ﻿using Formo;
 
+
 namespace Common
 {
     public class GlobalConfig
@@ -17,8 +18,9 @@ namespace Common
         public GlobalConfig()
         {
             dynamic config = new Configuration();
+            var envFile = config.EnvironmentFile;
 
-            Corpus = config.Bind<CorpusSettings>();
+            Corpus = config.Bind<CorpusSettings>(new CorpusSettings(envFile));
         }
 
         public CorpusSettings Corpus { get; }
