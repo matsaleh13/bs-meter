@@ -128,6 +128,10 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{53e611e8-c88c-4fbb-9e91-535dabf5f16d}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DataAccess\DataAccess.csproj">
       <Project>{27030c81-ab13-498e-8480-d88ab9e0990d}</Project>
       <Name>DataAccess</Name>

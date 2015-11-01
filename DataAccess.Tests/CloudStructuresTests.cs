@@ -1,9 +1,7 @@
 ﻿using CloudStructures;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DataAccess.Tests
@@ -12,16 +10,18 @@ namespace DataAccess.Tests
     public class CloudStructuresTests
     {
         #region Redis
+
         public static class RedisGroups
         {
             // load from web.config
-            static Dictionary<string, RedisGroup> configDict = CloudStructures.CloudStructuresConfigurationSection
+            private static Dictionary<string, RedisGroup> configDict = CloudStructures.CloudStructuresConfigurationSection
                 .GetSection()
                 .ToRedisGroups()
                 .ToDictionary(x => x.GroupName);
 
             // setup group
             public static readonly RedisGroup Cache = configDict["Cache"];
+
             public static readonly RedisGroup Session = configDict["Session"];
 
             static RedisGroups()
@@ -38,11 +38,14 @@ namespace DataAccess.Tests
             public static readonly RedisSettings Default = RedisGroups.Cache.Settings[0];
         }
 
-        #endregion
+#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
+        #endregion Redis
 
         #region Model
+
         // a class
         public class Person
+#pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
         {
             public string Name { get; set; }
             public int Age { get; set; }
@@ -61,7 +64,9 @@ namespace DataAccess.Tests
             }
         }
 
+#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
         public class Address
+#pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
         {
             public string Line1 { get; set; }
             public string Line2 { get; set; }
@@ -86,7 +91,9 @@ namespace DataAccess.Tests
             }
         }
 
+#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
         public class PersonWithAddress : Person
+#pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
         {
             public PersonWithAddress()
             {
@@ -110,15 +117,17 @@ namespace DataAccess.Tests
             }
         }
 
-        #endregion
+        #endregion Model
 
         #region Data
-        readonly string StringKey0 = "test-string-key-0";
-        readonly string HashKey0 = "test-hash-key-0";
-        readonly string ListKey0 = "test-list-key-0";
 
-        readonly SortedSet<string> _keys = new SortedSet<string>();
-        #endregion
+        private readonly string StringKey0 = "test-string-key-0";
+        private readonly string HashKey0 = "test-hash-key-0";
+        private readonly string ListKey0 = "test-list-key-0";
+
+        private readonly SortedSet<string> _keys = new SortedSet<string>();
+
+        #endregion Data
 
         [SetUp]
         public void SetUp()
@@ -230,8 +239,5 @@ namespace DataAccess.Tests
 
             Assert.AreEqual(person, copyResult);
         }
-
-
-
     }
 }

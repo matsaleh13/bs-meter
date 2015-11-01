@@ -11,8 +11,10 @@ namespace DataAccess.Tests
 
 
 
-    // a class
+#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
+                              // a class
     public class Person : IPerson
+#pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     {
         public Key Key { get; set; }
 
@@ -37,7 +39,9 @@ namespace DataAccess.Tests
         }
     }
 
+#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     public class Address
+#pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     {
         public string Line1 { get; set; }
         public string Line2 { get; set; }
@@ -68,7 +72,9 @@ namespace DataAccess.Tests
         }
     }
 
+#pragma warning disable CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     public class PersonWithAddress : IPerson
+#pragma warning restore CS0659 // Type overrides Object.Equals(object o) but does not override Object.GetHashCode()
     {
         public PersonWithAddress()
         {
