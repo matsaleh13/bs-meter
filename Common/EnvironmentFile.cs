@@ -9,6 +9,8 @@ namespace Common
     {
         static ILog Log = LogManager.GetLogger(typeof(EnvironmentFile));
 
+        const string COMMENT = "#";
+
         public static bool Load(string path)
         {
             string[] lines;
@@ -23,8 +25,18 @@ namespace Common
                 return false;
             }
 
-            foreach (var line in lines)
+            foreach (var rawline in lines)
             {
+                var line = rawline;
+
+                // Strip comments
+                var commentPos = line.IndexOf(COMMENT, StringComparison.Ordinal);
+                if (commentPos >= 0) line = line.Remove(commentPos);
+
+                // Nuke empty lines
+                if (string.IsNullOrEmpty(line) || string.IsNullOrWhiteSpace(line)) continue;
+
+
                 string[] parsed;
                 string name;
                 string value;
