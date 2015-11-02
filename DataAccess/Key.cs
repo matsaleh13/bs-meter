@@ -14,6 +14,11 @@
             _format = string.Format("{1}{0}{{0}}{0}{{1}}", Separator, Domain);
         }
 
+        public Key()
+        {
+
+        }
+
         public Key(string scope, string id)
         {
             Value = string.Format(_format, scope, id);

@@ -1,10 +1,36 @@
 ﻿using NUnit.Framework;
+using System.IO;
 
 namespace Common.Tests
 {
     [TestFixture]
     public class GlobalConfigTests
     {
+        string _envFile = "test_corpus.env";
+        string _testAddress = "foo.bar.baz";
+
+        public void CreateFile(string path, string contents)
+        {
+            File.WriteAllText(path, contents);
+        }
+
+        public void DeleteFile(string path)
+        {
+            File.Delete(path);
+        }
+
+        [SetUp]
+        public void SetUp()
+        {
+            CreateFile(_envFile, "REDIS_HOST=" + _testAddress);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            DeleteFile(_envFile);
+        }
+
         [Test]
         public void GlobalConfigInstanceTest()
         {
@@ -12,7 +38,7 @@ namespace Common.Tests
            
             Assert.IsNotNull(config.Corpus);
             Assert.IsNotNullOrEmpty(config.Corpus.RedisConnection);
-            Assert.AreEqual("{HOST}:6379,allowAdmin=true,ssl=false,connectTimeout=5000,database=0,password=null", config.Corpus.RedisConnection);
+            Assert.IsTrue(config.Corpus.RedisConnection.Contains(_testAddress));
         }
 
         [Test]
@@ -22,7 +48,7 @@ namespace Common.Tests
 
             Assert.IsNotNull(config.Corpus);
             Assert.IsNotNullOrEmpty(config.Corpus.RedisConnection);
-            Assert.AreEqual("{HOST}:6379,allowAdmin=true,ssl=false,connectTimeout=5000,database=0,password=null", config.Corpus.RedisConnection);
+            Assert.IsTrue(config.Corpus.RedisConnection.Contains(_testAddress));
 
             Assert.AreSame(config, GlobalConfig.Instance);
             Assert.AreNotSame(config, new GlobalConfig());

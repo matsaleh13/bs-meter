@@ -14,8 +14,6 @@ namespace Common
 
             EnvironmentFile.Load(envFile);
             var env = Environment.GetEnvironmentVariables();
-
-            env.Contains("REDIS_HOST");
         }
 
         string _redisHost;
