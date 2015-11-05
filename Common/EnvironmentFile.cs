@@ -5,6 +5,10 @@ using Common.Logging;
 
 namespace Common
 {
+    /// <summary>
+    /// Responsible for loading environment variable assignments from a 
+    /// file and setting them in the current process environment.
+    /// </summary>
     public static class EnvironmentFile
     {
         static ILog Log = LogManager.GetLogger(typeof(EnvironmentFile));
