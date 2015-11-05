@@ -212,3 +212,5 @@ _Pvt_Extensions/
 ModelManifest.xml
 /Experimentation
 *.env
+/WebEssentials2015-Settings.json
+/Redis.playlist
