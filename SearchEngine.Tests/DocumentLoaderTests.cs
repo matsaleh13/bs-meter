@@ -15,7 +15,10 @@ namespace SearchEngine.Tests
     public class DocumentLoaderTests
     {
         const string _testFile = "data.txt";
+        string _testDocumentData;
+        IRepositoryAsync<Document> _repo;
 
+        #region Utility
         public void CreateFile(string path, string contents)
         {
             File.WriteAllText(path, contents);
@@ -26,10 +29,36 @@ namespace SearchEngine.Tests
             File.Delete(path);
         }
 
+        // Warning: not thread safe
+        private void SetupRepoMock()
+        {
+            // Mock setup
+            A.CallTo(() => _repo.AddAsync(A<Document>._))
+                .Invokes(callObject => _testDocumentData = ((Document)callObject.Arguments[0]).Content)      // Store the retrieved data for later check
+                .Returns(Task.FromResult(true));
+        }
+
+        // Warning: not thread safe
+        private void CheckRepoMock()
+        {
+            A.CallTo(() => _repo.AddAsync(A<Document>._)).MustHaveHappened(Repeated.Exactly.Once);
+            Assert.AreEqual(TestDocument, _testDocumentData);
+        }
+        #endregion
+
+
+        [SetUp]
+        public void SetUp()
+        {
+            _testDocumentData = "";
+            _repo = A.Fake<IRepositoryAsync<Document>>(x => x.Strict());
+        }
+
         [TearDown]
         public void TearDown()
         {
-            DeleteFile(_testFile);
+            _repo = null;
+            DeleteFile(_testFile);  
         }
 
 
@@ -40,16 +69,36 @@ namespace SearchEngine.Tests
         [TestCase(16384)]
         public void LoadAsyncStreamTest(int blockSize)
         {
-            IRepositoryAsync<Document> repo = A.Fake<IRepositoryAsync<Document>>();
-            A.CallTo(() => repo.AddAsync(A<Document>.Ignored)).Returns(Task.FromResult(true));
+            SetupRepoMock();
 
-            var loader = new DocumentLoaderAsync(repo, blockSize);
+            var loader = new DocumentLoaderAsync(_repo, blockSize);
 
             var data = new MemoryStream(Encoding.UTF8.GetBytes(TestDocument));
             var awaiter = Task.Run(async () => await loader.LoadAsync(data, "text/plain").ConfigureAwait(false));
             var result = awaiter.Result;
 
             Assert.IsTrue(result);
+            CheckRepoMock();
+        }
+
+        [TestCase(16)]
+        [TestCase(256)]
+        [TestCase(1024)]
+        [TestCase(4096)]
+        [TestCase(16384)]
+        public void LoadAsyncFileTest(int blockSize)
+        {
+            CreateFile(_testFile, TestDocument);
+
+            SetupRepoMock();
+
+            var loader = new DocumentLoaderAsync(_repo, blockSize);
+
+            var awaiter = Task.Run(async () => await loader.LoadAsync(_testFile).ConfigureAwait(false));
+            var result = awaiter.Result;
+
+            Assert.IsTrue(result);
+            CheckRepoMock();
         }
 
         [TestCase(16)]
@@ -61,16 +110,16 @@ namespace SearchEngine.Tests
         {
             CreateFile(_testFile, TestDocument);
 
-            IRepositoryAsync<Document> repo = A.Fake<IRepositoryAsync<Document>>();
-            A.CallTo(() => repo.AddAsync(A<Document>.Ignored)).Returns(Task.FromResult(true));
+            SetupRepoMock();
 
-            var loader = new DocumentLoaderAsync(repo, blockSize);
+            var loader = new DocumentLoaderAsync(_repo, blockSize);
 
             var testPath = Path.GetFullPath(_testFile);
             var awaiter = Task.Run(async () => await loader.LoadAsync(new Uri(string.Format("file:///{0}", testPath))).ConfigureAwait(false));
             var result = awaiter.Result;
 
             Assert.IsTrue(result);
+            CheckRepoMock();
         }
 
         [TestCase(16)]
@@ -91,15 +140,15 @@ namespace SearchEngine.Tests
                         .WithBody(TestDocument)
                 );
 
-            IRepositoryAsync<Document> repo = A.Fake<IRepositoryAsync<Document>>();
-            A.CallTo(() => repo.AddAsync(A<Document>.Ignored)).Returns(Task.FromResult(true));
+            SetupRepoMock();
 
-            var loader = new DocumentLoaderAsync(repo, blockSize);
+            var loader = new DocumentLoaderAsync(_repo, blockSize);
 
             var awaiter = Task.Run(async () => await loader.LoadAsync(new Uri(string.Format("http://localhost:{0}/{1}", server.Port, _testFile))).ConfigureAwait(false));
             var result = awaiter.Result;
 
             Assert.IsTrue(result);
+            CheckRepoMock();
         }
 
 

@@ -15,6 +15,12 @@ namespace AnalysisModel
         public Key Key { get; set; }
 
         /// <summary>
+        /// A cryptographic hash of the document's contents.
+        /// For use in checking for duplicates.
+        /// </summary>
+        public string Hash { get; set; }
+
+        /// <summary>
         /// The URI of the original source of the document, if available.
         /// </summary>
         public Uri Source { get; set; }
