@@ -15,7 +15,7 @@ namespace SearchEngine.Tests
     public class DocumentLoaderTests
     {
         const string _testFile = "data.txt";
-        string _testDocumentData;
+        Document _testDocument;
         IRepositoryAsync<Document> _repo;
 
         #region Utility
@@ -34,7 +34,7 @@ namespace SearchEngine.Tests
         {
             // Mock setup
             A.CallTo(() => _repo.AddAsync(A<Document>._))
-                .Invokes(callObject => _testDocumentData = ((Document)callObject.Arguments[0]).Content)      // Store the retrieved data for later check
+                .Invokes(callObject => _testDocument = (Document)callObject.Arguments[0])      // Store the retrieved data for later check
                 .Returns(Task.FromResult(true));
         }
 
@@ -42,7 +42,8 @@ namespace SearchEngine.Tests
         private void CheckRepoMock()
         {
             A.CallTo(() => _repo.AddAsync(A<Document>._)).MustHaveHappened(Repeated.Exactly.Once);
-            Assert.AreEqual(TestDocument, _testDocumentData);
+            Assert.AreEqual(TestDocument, _testDocument.Content);
+            Assert.IsNotNullOrEmpty(_testDocument.Hash);
         }
         #endregion
 
@@ -50,7 +51,7 @@ namespace SearchEngine.Tests
         [SetUp]
         public void SetUp()
         {
-            _testDocumentData = "";
+            _testDocument = null;
             _repo = A.Fake<IRepositoryAsync<Document>>(x => x.Strict());
         }
 
@@ -144,7 +145,8 @@ namespace SearchEngine.Tests
 
             var loader = new DocumentLoaderAsync(_repo, blockSize);
 
-            var awaiter = Task.Run(async () => await loader.LoadAsync(new Uri(string.Format("http://localhost:{0}/{1}", server.Port, _testFile))).ConfigureAwait(false));
+            var awaiter = Task.Run(async () => 
+                await loader.LoadAsync(new Uri(string.Format("http://localhost:{0}/{1}", server.Port, _testFile))).ConfigureAwait(false));
             var result = awaiter.Result;
 
             Assert.IsTrue(result);
