@@ -64,6 +64,7 @@ namespace AnalysisLib.Tests
         [TestCase(128)]
         [TestCase(512)]
         [TestCase(1024)]
+        [TestCase(4096)]
         public void AnalyzeTest(int blockSize)
         {
             var analyzer = new CharacterAnalyzer();
@@ -81,6 +82,7 @@ namespace AnalysisLib.Tests
         [TestCase(128)]
         [TestCase(512)]
         [TestCase(1024)]
+        [TestCase(4096)]
         public void AnalyzeAsyncTest(int blockSize)
         {
             var analyzer = new CharacterAnalyzer();

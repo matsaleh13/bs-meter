@@ -52,12 +52,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interfaces\ILoader.cs" />
-    <Compile Include="Loader.cs" />
+    <Compile Include="Interfaces\IDocumentLoader.cs" />
+    <Compile Include="DocumentLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AnalysisModel\AnalysisModel.csproj">
+      <Project>{98b2a533-2b63-458f-8192-a4b019e24149}</Project>
+      <Name>AnalysisModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataAccess\DataAccess.csproj">
+      <Project>{27030c81-ab13-498e-8480-d88ab9e0990d}</Project>
+      <Name>DataAccess</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -48,6 +48,10 @@
       <HintPath>..\packages\Common.Logging.NLog41.3.3.0\lib\net40\Common.Logging.NLog41.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="FakeItEasy, Version=1.25.3.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
+      <HintPath>..\packages\FakeItEasy.1.25.3\lib\net40\FakeItEasy.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Formo, Version=1.4.4.40853, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Formo.1.4.4.40853\lib\net40\Formo.dll</HintPath>
       <Private>True</Private>

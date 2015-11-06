@@ -1,7 +1,6 @@
 ﻿using DataAccess;
 using DataAccess.Interfaces;
 using System;
-using System.Net.Mime;
 
 namespace AnalysisModel
 {
@@ -35,6 +34,6 @@ namespace AnalysisModel
         /// <summary>
         /// The data of the document contents in raw form.
         /// </summary>
-        public byte[] Data { get; set; }
+        public string Content { get; set; }
     }
 }

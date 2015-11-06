@@ -48,6 +48,14 @@
       <HintPath>..\packages\Common.Logging.NLog41.3.3.0\lib\net40\Common.Logging.NLog41.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="FakeItEasy, Version=1.25.3.0, Culture=neutral, PublicKeyToken=eff28e2146d5fd2c, processorArchitecture=MSIL">
+      <HintPath>..\packages\FakeItEasy.1.25.3\lib\net40\FakeItEasy.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Mock4Net.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mock4Net.Core.1.0.0-v20150608-4f463ad\lib\net45\Mock4Net.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="NLog, Version=4.1.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.4.1.0\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
@@ -67,7 +75,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="LoaderTests.cs" />
+    <Compile Include="DocumentLoaderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -75,6 +83,14 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AnalysisModel\AnalysisModel.csproj">
+      <Project>{98b2a533-2b63-458f-8192-a4b019e24149}</Project>
+      <Name>AnalysisModel</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataAccess\DataAccess.csproj">
+      <Project>{27030c81-ab13-498e-8480-d88ab9e0990d}</Project>
+      <Name>DataAccess</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SearchEngine\SearchEngine.csproj">
       <Project>{440027CD-7FFF-4534-9DE7-6B53D5FA628C}</Project>
       <Name>SearchEngine</Name>
