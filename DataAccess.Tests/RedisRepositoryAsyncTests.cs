@@ -29,20 +29,18 @@ namespace DataAccess.Tests
         readonly SortedSet<string> _keys = new SortedSet<string>();
         #endregion
 
-        [TestFixtureSetUp]
-        public void OneTimeSetUp()
+        public virtual void OneTimeSetUp()
         {
             var serializer = GetSerializer();
 
             // Configured via app.config
-            var conn = GlobalConfig.Instance.Corpus["Redis"];
-            _client = new StackExchangeRedisCacheClient(serializer, conn);
+            var conn = RedisConnectionManager.Instance.GetConnection("Redis");
+            _client = new StackExchangeRedisCacheClient(conn, serializer);
         }
 
-        [TestFixtureTearDown]
-        public void OneTimeTearDown()
+        public virtual void OneTimeTearDown()
         {
-            _client.Dispose();
+            _client = null;
         }
 
         [SetUp]
@@ -236,12 +234,36 @@ namespace DataAccess.Tests
     public class RedisRepositoryAsyncJilTests : RedisRepositoryAsyncTests
     {
         protected override ISerializer GetSerializer() => new JilSerializer();
+
+        [TestFixtureSetUp]
+        public override void OneTimeSetUp()
+        {
+            base.OneTimeSetUp();
+        }
+
+        [TestFixtureTearDown]
+        public override void OneTimeTearDown()
+        {
+            base.OneTimeTearDown();
+        }
     }
 
     [TestFixture]
     public class RedisRepositoryAsyncNewtonsoftTests : RedisRepositoryAsyncTests
     {
         protected override ISerializer GetSerializer() => new NewtonsoftSerializer();
+
+        [TestFixtureSetUp]
+        public override void OneTimeSetUp()
+        {
+            base.OneTimeSetUp();
+        }
+
+        [TestFixtureTearDown]
+        public override void OneTimeTearDown()
+        {
+            base.OneTimeTearDown();
+        }
     }
 
 }

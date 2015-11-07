@@ -20,9 +20,9 @@ namespace Common
             dynamic config = new Configuration();
             var envFile = config.EnvironmentFile;
 
-            Corpus = config.Bind<ConnectionSettings>(new ConnectionSettings(envFile));
+            Connections = config.Bind<ConnectionSettings>(new ConnectionSettings(envFile));
         }
 
-        public ConnectionSettings Corpus { get; }
+        public ConnectionSettings Connections { get; }
     }
 }

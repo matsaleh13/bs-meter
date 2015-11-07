@@ -36,9 +36,9 @@ namespace Common.Tests
         {
             var config = new GlobalConfig();
            
-            Assert.IsNotNull(config.Corpus);
-            Assert.IsNotNullOrEmpty(config.Corpus["Redis"]);
-            Assert.IsTrue(config.Corpus["Redis"].Contains(_testAddress));
+            Assert.IsNotNull(config.Connections);
+            Assert.IsNotNullOrEmpty(config.Connections["Redis"]);
+            Assert.IsTrue(config.Connections["Redis"].Contains(_testAddress));
         }
 
         [Test]
@@ -46,9 +46,9 @@ namespace Common.Tests
         {
             var config = GlobalConfig.Instance;
 
-            Assert.IsNotNull(config.Corpus);
-            Assert.IsNotNullOrEmpty(config.Corpus["Redis"]);
-            Assert.IsTrue(config.Corpus["Redis"].Contains(_testAddress));
+            Assert.IsNotNull(config.Connections);
+            Assert.IsNotNullOrEmpty(config.Connections["Redis"]);
+            Assert.IsTrue(config.Connections["Redis"].Contains(_testAddress));
 
             Assert.AreSame(config, GlobalConfig.Instance);
             Assert.AreNotSame(config, new GlobalConfig());
