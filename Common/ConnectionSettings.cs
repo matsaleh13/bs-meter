@@ -21,11 +21,9 @@ namespace Common
             var env = Environment.GetEnvironmentVariables();
         }
 
-        string _redisHost;
-        public string RedisHost => _redisHost ?? (_redisHost = Environment.GetEnvironmentVariable("REDIS_HOST"));
-
         string GetConnectionString(string name)
         {
+            // TODO: handle errors
             var conn = ConfigurationManager.ConnectionStrings[name];
             return Environment.ExpandEnvironmentVariables(conn.ConnectionString);
         }
@@ -36,6 +34,7 @@ namespace Common
             get
             {
                 string connString;
+                lock(_connectionStrings)
                 if (!_connectionStrings.TryGetValue(name, out connString))
                 {
                     connString = GetConnectionString(name);
@@ -48,8 +47,6 @@ namespace Common
                 return connString;
             }
         }
-        string _redisConnection;
-        public string RedisConnection => _redisConnection ?? (_redisConnection = GetConnectionString("Redis"));
 
     }
 }
