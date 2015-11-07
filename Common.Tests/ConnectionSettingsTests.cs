@@ -5,7 +5,7 @@ using System.IO;
 namespace Common.Tests
 {
     [TestFixture]
-    public class CorpusSettingsTests
+    public class ConnectionSettingsTests
     {
         string _testAddress = "192.0.0.192";    // ya, bogus
         string _envFile = "test.env";
@@ -33,15 +33,15 @@ namespace Common.Tests
         }
 
         [Test]
-        public void CorpusSettingsTest()
+        public void ConnectionSettingsTest()
         {
             dynamic config = new Configuration();
 
-            CorpusSettings corpus = config.Bind<CorpusSettings>(new CorpusSettings(_envFile));
+            ConnectionSettings settings = config.Bind<ConnectionSettings>(new ConnectionSettings(_envFile));
 
-            Assert.IsNotNull(corpus);
-            Assert.IsNotNullOrEmpty(corpus.RedisConnection);
-            Assert.IsTrue(corpus.RedisConnection.Contains(_testAddress));
+            Assert.IsNotNull(settings);
+            Assert.IsNotNullOrEmpty(settings["Redis"]);
+            Assert.IsTrue(settings["Redis"].Contains(_testAddress));
         }
     }
 }

@@ -51,7 +51,7 @@
     <Compile Include="ConfigurationException.cs" />
     <Compile Include="EnvironmentFile.cs" />
     <Compile Include="GlobalConfig.cs" />
-    <Compile Include="CorpusSettings.cs" />
+    <Compile Include="ConnectionSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

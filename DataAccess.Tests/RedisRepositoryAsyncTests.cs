@@ -35,7 +35,7 @@ namespace DataAccess.Tests
             var serializer = GetSerializer();
 
             // Configured via app.config
-            var conn = GlobalConfig.Instance.Corpus.RedisConnection;
+            var conn = GlobalConfig.Instance.Corpus["Redis"];
             _client = new StackExchangeRedisCacheClient(serializer, conn);
         }
 

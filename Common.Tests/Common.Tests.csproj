@@ -77,7 +77,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="CorpusSettingsTests.cs" />
+    <Compile Include="ConnectionSettingsTests.cs" />
     <Compile Include="EnvironmentFileTests.cs" />
     <Compile Include="GlobalConfigTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

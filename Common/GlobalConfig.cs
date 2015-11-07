@@ -15,14 +15,14 @@ namespace Common
         /// <summary>
         /// Require use of singleton except for testing.
         /// </summary>
-        public GlobalConfig()
+        internal GlobalConfig()
         {
             dynamic config = new Configuration();
             var envFile = config.EnvironmentFile;
 
-            Corpus = config.Bind<CorpusSettings>(new CorpusSettings(envFile));
+            Corpus = config.Bind<ConnectionSettings>(new ConnectionSettings(envFile));
         }
 
-        public CorpusSettings Corpus { get; }
+        public ConnectionSettings Corpus { get; }
     }
 }
