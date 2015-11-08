@@ -1,4 +1,5 @@
-﻿using StackExchange.Redis.Extensions.Core;
+﻿using StackExchange.Redis;
+using StackExchange.Redis.Extensions.Core;
 
 namespace DataAccess
 {
@@ -34,44 +35,7 @@ namespace DataAccess
         public static implicit operator string(Key key) => key.Value;
         public static implicit operator Key(string key) => new Key(key);
 
-        static ICacheClient _client;
-        public static void SetClient(ICacheClient client)
-        {
-            _client = client;
-        }
-
-        public static Key Create(KeyScope scope)
-        {
-            return new Key(scope.Value);
-        }
-
-        public static Key Create(KeyScope scope, string id)
-        {
-            if (id == null)
-            {
-                // Get a new ID from the DB.
-                if (_client == null)
-                    throw new DataAccessException("Client not initialized.");
-                id = _client.Database.StringIncrement(scope.Value).ToString();
-            }
-
-            var key = string.Format("{1}{0}{2}", KeyScope.Separator, scope.Value, id);
-            return new Key(key);
-        }
-
-        public static Key Create(string scope0, string id=null)
-        {
-            return Create(new KeyScope(scope0), id);
-        }
-
-        public static Key Create(string scope0, string scope1, string id=null)
-        {
-            return Create(new KeyScope(scope0, scope1), id);
-        }
-
-        public static Key Create(string scope0, string scope1, string scope2, string id=null)
-        {
-            return Create(new KeyScope(scope0, scope1, scope2), id);
-        }
+        public static implicit operator RedisKey (Key key) => key.Value;
+        public static implicit operator Key(RedisKey key) => new Key(key);
     }
 }

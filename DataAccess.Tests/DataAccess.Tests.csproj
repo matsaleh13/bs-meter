@@ -119,6 +119,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CloudStructuresTests.cs" />
+    <Compile Include="KeyFactoryTests.cs" />
+    <Compile Include="KeyScopeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedisExtensionsTests.cs" />
     <Compile Include="RedisRepositoryAsyncTests.cs" />
