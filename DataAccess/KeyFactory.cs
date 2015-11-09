@@ -15,13 +15,7 @@ namespace DataAccess
         /// Singleton access.
         /// TODO: IoC container
         /// </summary>
-        public static KeyFactory Instance
-        {
-            get
-            {
-                return _instance ?? (_instance = new KeyFactory(RedisConnectionManager.Instance.GetConnection("Redis")));
-            }
-        }
+        public static KeyFactory Instance => _instance ?? (_instance = new KeyFactory(RedisConnectionManager.Instance.GetConnection("Redis")));
 
 
         private ConnectionMultiplexer _connection;
@@ -35,26 +29,92 @@ namespace DataAccess
             _connection = connection;
         }
 
-
-        const string _keyFormat0 = "{1}{0}{2}";
-
-        public Key CreateKey(KeyScope scope, int id)
+        /// <summary>
+        /// Retrieve from the persistent store the next unique ID for the given 
+        /// KeyScope. The returned value can then be used as the unique component
+        /// of a Key within that KeyScope.
+        /// </summary>
+        /// <param name="scope">The KeyScope that defines the context of the key that will use the returned ID.</param>
+        /// <returns></returns>
+        long GetNextId(KeyScope scope)
         {
-            return new Key(string.Format(_keyFormat0, KeyScope.Separator, scope.Value, id));
+            return _connection.GetDatabase().StringIncrement(scope.NextIdKey);
         }
 
-        const string _keyFormat1 = "{1}{0}{2}{0}{3}";
+        const string _keyFormat = "{1}{0}{2}";
 
-        public Key CreateKey(string scope0, string scope1, string id)
+        /// <summary>
+        /// Creates a key within the given KeyScope. If the optional id parameter 
+        /// is provided, it is used as the unique component of the returned key.
+        /// If not, then an integer ID is generated in the database for the given scope.
+        /// </summary>
+        /// <param name="scope">The scope that defines the context of the key.</param>
+        /// <param name="id">Optional string that serves as a unique component within the scope.</param>
+        /// <returns>The new key.</returns>
+        public Key CreateKey(KeyScope scope, string id = null)
         {
-            return new Key(string.Format(_keyFormat1, KeyScope.Separator, scope0, scope1, id));
+            if (id == null)
+            {
+                id = GetNextId(scope).ToString();
+            }
+
+            return new Key(string.Format(_keyFormat, KeyScope.Separator, scope.Value, id));
         }
 
-        const string _keyFormat2 = "{1}{0}{2}{0}{3}{0}{4}";
+        /// <summary>
+        /// Creates a key within the given scope, which consists of two components. 
+        /// If the optional id parameter is provided, it is used as the unique component of the returned key.
+        /// If not, then an integer ID is generated in the database for the given scope.
+        /// </summary>
+        /// <param name="scope0">The first of two components of the scope that defines the context of the key.</param>
+        /// <param name="scope1">The second of two components of the scope that defines the context of the key.</param>
+        /// <param name="id">Optional string that serves as a unique component within the scope.</param>
+        /// <returns>The new key.</returns>
+        public Key CreateKey(string scope0, string scope1, string id = null) => 
+            CreateKey(new KeyScope(scope0, scope1), id);
 
-        public Key CreateKey(string scope0, string scope1, string scope2, string id)
-        {
-            return new Key(string.Format(_keyFormat2, KeyScope.Separator, scope0, scope1, scope2, id));
-        }
+        /// <summary>
+        /// Creates a key within the given scope, which consists of two components. 
+        /// If the optional id parameter is provided, it is used as the unique component of the returned key.
+        /// If not, then an integer ID is generated in the database for the given scope.
+        /// </summary>
+        /// <param name="scope0">The first of three components of the scope that defines the context of the key.</param>
+        /// <param name="scope1">The second of three components of the scope that defines the context of the key.</param>
+        /// <param name="scope2">The third of three components of the scope that defines the context of the key.</param>
+        /// <param name="id">Optional string that serves as a unique component within the scope.</param>
+        /// <returns>The new key.</returns>
+        public Key CreateKey(string scope0, string scope1, string scope2, string id = null) => 
+            CreateKey(new KeyScope(scope0, scope1, scope2), id);
+
+        /// <summary>
+        /// Overload of <see cref="CreateKey(KeyScope, string)"/> that accepts an id of type long.
+        /// </summary>
+        /// <param name="scope">The scope that defines the context of the key.</param>
+        /// <param name="id">Optional string that serves as a unique component within the scope.</param>
+        /// <returns>The new key.</returns>
+        public Key CreateKey(KeyScope scope, long id) => 
+            CreateKey(scope, id.ToString());
+
+        /// <summary>
+        /// Overload of <see cref="CreateKey(string, string, string)"/> that accepts an id of type long.
+        /// </summary>
+        /// <param name="scope0">The first of three components of the scope that defines the context of the key.</param>
+        /// <param name="scope1">The second of three components of the scope that defines the context of the key.</param>
+        /// <param name="id">Optional string that serves as a unique component within the scope.</param>
+        /// <returns>The new key.</returns>
+        public Key CreateKey(string scope0, string scope1, long id) => 
+            CreateKey(new KeyScope(scope0, scope1), id.ToString());
+
+        /// <summary>
+        /// Overload of <see cref="CreateKey(string, string, string, string)"/> that accepts an id of type long.
+        /// </summary>
+        /// <param name="scope0">The first of three components of the scope that defines the context of the key.</param>
+        /// <param name="scope1">The second of three components of the scope that defines the context of the key.</param>
+        /// <param name="scope2">The third of three components of the scope that defines the context of the key.</param>
+        /// <param name="id">Optional string that serves as a unique component within the scope.</param>
+        /// <returns>The new key.</returns>
+        public Key CreateKey(string scope0, string scope1, string scope2, long id) => 
+            CreateKey(new KeyScope(scope0, scope1, scope2), id.ToString());
+
     }
 }
