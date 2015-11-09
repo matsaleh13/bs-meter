@@ -2,6 +2,14 @@
 
 namespace DataAccess
 {
+    /// <summary>
+    /// Responsible for defining a logical context within which a key may exist.
+    /// A KeyScope contains a delimited string, similar to a URI. Each segment represents 
+    /// a node in a logical hierarchy. The root node of the hierarchy is the domain, defined
+    /// by <see cref="KeyScope.Domain"/> and is the same for all KeyScopes.
+    /// The delimiter is defined by the <see cref="KeyScope.Separator"/> field.
+    /// 
+    /// </summary>
     public class KeyScope
     {
         public const string Separator = ":";
@@ -10,16 +18,32 @@ namespace DataAccess
         const string NextId = "next_id";
 
         readonly string _scope;
-        public KeyScope(string scope0)
+
+        /// <summary>
+        /// Creates a KeyScope that has a single segment in addition to the domain.
+        /// </summary>
+        /// <param name="scope">The single segment of the scope.</param>
+        public KeyScope(string scope)
         {
-            _scope = scope0;
+            _scope = scope;
         }
 
+        /// <summary>
+        /// Creates a KeyScope that has two segmenta in addition to the domain.
+        /// </summary>
+        /// <param name="scope0">The first segment of the scope after the domain.</param>
+        /// <param name="scope1">The second segment of the scope after the domain.</param>
         public KeyScope(string scope0, string scope1)
         {
             _scope = string.Format("{1}{0}{2}", Separator, scope0, scope1);
         }
 
+        /// <summary>
+        /// Creates a KeyScope that has three segmenta in addition to the domain.
+        /// </summary>
+        /// <param name="scope0">The first segment of the scope after the domain.</param>
+        /// <param name="scope1">The second segment of the scope after the domain.</param>
+        /// <param name="scope2">The third segment of the scope after the domain.</param>
         public KeyScope(string scope0, string scope1, string scope2)
         {
             _scope = string.Format("{1}{0}{2}{0}{3}", Separator, scope0, scope1, scope2);
