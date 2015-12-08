@@ -67,12 +67,25 @@ namespace DataAccess
         /// <summary>
         /// Creates a new KeyScope containing the scope of the provided key.
         /// </summary>
+        /// <throws>DataAccessException when key has no domain.</throws>
         /// <param name="key">The key from which the scope will be created.</param>
         /// <returns>The KeyScope</returns>
         public static KeyScope FromKey(Key key)
         {
-            var lastSep = key.Value.LastIndexOf(KeyScope.Separator, StringComparison.InvariantCulture);
-            return new KeyScope(key.Value.Substring(0, lastSep));
+            if (!key.Value.StartsWith(Domain, StringComparison.InvariantCulture))
+            {
+                // Key must have a domain in order to get a KeyScope from it.
+                throw new DataAccessException(String.Format("Can't create KeyScope from key [{0}] as it has no domain.", key));
+            }
+
+            // last separator before the key segment (so we can trim it below).
+            var lastSep = key.Value.LastIndexOf(Separator, StringComparison.InvariantCulture);
+
+            // substring starts at first non-domain segment
+            int subStart = Domain.Length + 1;
+            int subLen = lastSep - subStart;
+
+            return new KeyScope(key.Value.Substring(subStart, subLen));
         }
 
         public static implicit operator string(KeyScope scope) => scope.Value;

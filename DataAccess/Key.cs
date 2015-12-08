@@ -21,13 +21,14 @@ namespace DataAccess
         /// Ctor for assigning any string as the key.
         /// </summary>
         /// <param name="key">The value of the key.</param>
-        public Key(string key)
+        internal Key(string key)
         {
             Value = key;
         }
 
 
         public string Value { get; }
+        public override string ToString() => Value;
 
         public override bool Equals(object obj) => (obj is string) && Value == (string)obj;
         public override int GetHashCode() => Value.GetHashCode();

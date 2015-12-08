@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using DataAccess;
+using NUnit.Framework;
 using System.Collections.Generic;
 
 namespace DataAccess.Tests
@@ -6,6 +7,27 @@ namespace DataAccess.Tests
     [TestFixture]
     public class KeyFactoryTests
     {
+        #region Test Data
+
+        KeyScope KS_ONE = new KeyScope("one");
+        KeyScope KS_ONE_TWO = new KeyScope("one", "two");
+        KeyScope KS_ONE_TWO_THREE = new KeyScope("one", "two", "three");
+
+        #endregion
+
+        /// <summary>
+        /// Deletes the "next id" generator keys for all known KeyScopes.
+        /// Use this to reset the test at the start.
+        /// </summary>
+        private void DeleteKeyIdGenerators()
+        {
+            var db = RedisConnectionManager.Instance.GetConnection("Redis").GetDatabase();
+            db.KeyDelete(KS_ONE.NextIdKey);
+            db.KeyDelete(KS_ONE_TWO.NextIdKey);
+            db.KeyDelete(KS_ONE_TWO_THREE.NextIdKey);
+        }
+
+
         List<Key> _keys = new List<Key>();
         private void AddKey(Key key)
         {
@@ -27,7 +49,7 @@ namespace DataAccess.Tests
         [SetUp]
         public void SetUp()
         {
-
+            DeleteKeyIdGenerators();
         }
 
         [TearDown]
@@ -73,36 +95,36 @@ namespace DataAccess.Tests
         }
 
         [Test]
-        public void CreateKeyWithKeyScopeTest()
+        public void CreateAutoKeyWithKeyScopeTest()
         {
-            var key = KeyFactory.Instance.CreateKey(new KeyScope("one"));
+            var key = KeyFactory.Instance.CreateAutoKey(new KeyScope("one"));
             AddKey(key);
 
             Assert.AreEqual(string.Format("{1}{0}{2}{0}{3}", KeyScope.Separator, KeyScope.Domain, "one", 1), key.Value);
         }
 
         [Test]
-        public void CreateKeyWithStringScopeTest()
+        public void CreateAutoKeyWithStringScopeTest()
         {
-            var key = KeyFactory.Instance.CreateKey("one");
+            var key = KeyFactory.Instance.CreateAutoKey("one");
             AddKey(key);
 
             Assert.AreEqual(string.Format("{1}{0}{2}{0}{3}", KeyScope.Separator, KeyScope.Domain, "one", 1), key.Value);
         }
 
         [Test]
-        public void CreateKeyWithStringScope2Test()
+        public void CreateAutoKeyWithStringScope2Test()
         {
-            var key = KeyFactory.Instance.CreateKey("one", "two");
+            var key = KeyFactory.Instance.CreateAutoKey("one", "two");
             AddKey(key);
 
             Assert.AreEqual(string.Format("{1}{0}{2}{0}{3}{0}{4}", KeyScope.Separator, KeyScope.Domain, "one", "two", 1), key.Value);
         }
 
         [Test]
-        public void CreateKeyWithStringScope3Test()
+        public void CreateAutoKeyWithStringScope3Test()
         {
-            var key = KeyFactory.Instance.CreateKey("one", "two", "three");
+            var key = KeyFactory.Instance.CreateAutoKey("one", "two", "three");
             AddKey(key);
 
             Assert.AreEqual(string.Format("{1}{0}{2}{0}{3}{0}{4}{0}{5}", KeyScope.Separator, KeyScope.Domain, "one", "two", "three", 1), key.Value);

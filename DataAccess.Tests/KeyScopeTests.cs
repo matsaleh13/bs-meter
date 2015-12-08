@@ -42,7 +42,7 @@ namespace DataAccess.Tests
         [Test]
         public void FromKeyTest()
         {
-            var scope = KeyScope.FromKey(new Key("one:two:three:42"));
+            var scope = KeyScope.FromKey(new Key("bsm:one:two:three:42"));
             Assert.AreEqual(string.Format("{1}{0}{2}{0}{3}{0}{4}", KeyScope.Separator, KeyScope.Domain, "one", "two", "three"), scope.Value);
         }
     }
