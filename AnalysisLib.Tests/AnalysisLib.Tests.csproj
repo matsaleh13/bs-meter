@@ -245,7 +245,7 @@
     <Compile Include="CharacterAnalyzerResultTests.cs" />
     <Compile Include="CharacterAnalyzerTests.cs" />
     <Compile Include="CharacterCounterTests.cs" />
-    <Compile Include="CharacterPercentCounterTests.cs" />
+    <Compile Include="CharacterFrequencyCounterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

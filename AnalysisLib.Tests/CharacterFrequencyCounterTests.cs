@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace AnalysisLib.Tests
 {
     [TestFixture]
-    public class CharacterPercentCounterTests : CharacterCounterTests
+    public class CharacterFrequencyCounterTests : CharacterCounterTests
     {
         CharacterCounter _all;
 
