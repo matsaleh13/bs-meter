@@ -48,7 +48,7 @@ namespace AnalysisLib
     }
 
 
-    public class CharacterPercentCounter : CharacterCounter, IFrequencyCounter
+    public class CharacterFrequencyCounter : CharacterCounter, IFrequencyCounter
     {
         readonly ICounter _all;
 
@@ -56,7 +56,7 @@ namespace AnalysisLib
         /// Ctor 
         /// </summary>
         /// <param name="all">An ICounter of the basis against which the percentage is calculated.</param>
-        public CharacterPercentCounter(ICounter all)
+        public CharacterFrequencyCounter(ICounter all)
         {
             _all = all;
         }
@@ -66,7 +66,7 @@ namespace AnalysisLib
         /// </summary>
         /// <param name="all">An ICounter of the basis against which the percentage is calculated.</param>
         /// <param name="count">The initial value.</param>
-        public CharacterPercentCounter(ICounter all, int count) : base(count)
+        public CharacterFrequencyCounter(ICounter all, int count) : base(count)
         {
             _all = all;
         }
@@ -74,9 +74,9 @@ namespace AnalysisLib
         /// <summary>
         /// Number of counted characters as a percentage of all characters.
         /// </summary>
-        public float Frequency => PercentOfCharacterCount(Count);
+        public float Frequency => FrequencyOfCharacterCount(Count);
 
-        protected float PercentOfCharacterCount(int count) => count == 0 ? 0 : (float)count / _all.Count * 100.0f;
+        protected float FrequencyOfCharacterCount(int count) => count == 0 ? 0 : (float)count / _all.Count;
     }
 
 
@@ -84,8 +84,8 @@ namespace AnalysisLib
     {
         public CharacterRepeatCounter(ICounter all)
         {
-            Counter = new CharacterPercentCounter(all);
-            RepeatCounter = new CharacterPercentCounter(all);
+            Counter = new CharacterFrequencyCounter(all);
+            RepeatCounter = new CharacterFrequencyCounter(all);
         }
 
         public IFrequencyCounter Counter { get; }
