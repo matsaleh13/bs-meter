@@ -21,7 +21,7 @@ namespace DataAccess.Tests
         /// </summary>
         private void DeleteKeyIdGenerators()
         {
-            var db = RedisConnectionManager.Instance.GetConnection("Redis").GetDatabase();
+            var db = RedisConnectionManager.Instance.GetDefaultConnection().GetDatabase();
             db.KeyDelete(KS_ONE.NextIdKey);
             db.KeyDelete(KS_ONE_TWO.NextIdKey);
             db.KeyDelete(KS_ONE_TWO_THREE.NextIdKey);
@@ -36,7 +36,7 @@ namespace DataAccess.Tests
 
         private void DeleteKeys()
         {
-            var db = RedisConnectionManager.Instance.GetConnection("Redis").GetDatabase();
+            var db = RedisConnectionManager.Instance.GetDefaultConnection().GetDatabase();
 
             foreach (var key in _keys)
             {

@@ -15,6 +15,11 @@ namespace DataAccess
     /// </summary>
     public class RedisConnectionManager
     {
+        /// <summary>
+        /// TODO: Create an appSetting value for default connection.
+        /// </summary>
+        public const string DefaultConnection = "Redis";
+
         readonly IDictionary<string, ConnectionMultiplexer> _connections = new ConcurrentDictionary<string, ConnectionMultiplexer>();
 
         /// <summary>
@@ -49,5 +54,8 @@ namespace DataAccess
 
             return conn;
         }
+
+
+        public ConnectionMultiplexer GetDefaultConnection() => GetConnection(DefaultConnection);
     }
 }

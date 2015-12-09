@@ -14,8 +14,9 @@ namespace DataAccess
         /// <summary>
         /// Singleton access.
         /// TODO: IoC container
+        /// TODO: This is gonna break as soon as I pass in a different connection string name to other code.
         /// </summary>
-        public static KeyFactory Instance => _instance ?? (_instance = new KeyFactory(RedisConnectionManager.Instance.GetConnection("Redis")));
+        public static KeyFactory Instance => _instance ?? (_instance = new KeyFactory(RedisConnectionManager.Instance.GetDefaultConnection()));
 
 
         private ConnectionMultiplexer _connection;

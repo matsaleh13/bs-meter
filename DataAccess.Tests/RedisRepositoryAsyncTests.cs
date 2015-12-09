@@ -34,7 +34,7 @@ namespace DataAccess.Tests
             var serializer = GetSerializer();
 
             // Configured via app.config
-            var conn = RedisConnectionManager.Instance.GetConnection("Redis");
+            var conn = RedisConnectionManager.Instance.GetDefaultConnection();
             _client = new StackExchangeRedisCacheClient(conn, serializer);
         }
 
