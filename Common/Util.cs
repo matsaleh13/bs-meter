@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AnalysisLib
+namespace Common
 {
     public static class Util
     {
@@ -20,7 +20,9 @@ namespace AnalysisLib
             {
                 double machEps = 1.0d;
 
+#pragma warning disable RECS0018 // Comparison of floating point numbers with equality operator
                 while ((1.0d + machEps) != 1.0d)
+#pragma warning restore RECS0018 // Comparison of floating point numbers with equality operator
                 {
                     machEps *= 0.5d;
                 }
@@ -41,7 +43,9 @@ namespace AnalysisLib
             {
                 float machEps = 1.0f;
 
+#pragma warning disable RECS0018 // Comparison of floating point numbers with equality operator
                 while ((1.0f + machEps) != 1.0f)
+#pragma warning restore RECS0018 // Comparison of floating point numbers with equality operator
                 {
                     machEps *= 0.5f;
                 }

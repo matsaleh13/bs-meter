@@ -259,6 +259,10 @@
       <Project>{11dd141d-cd76-4b07-a2c4-d3a40dcbc5d2}</Project>
       <Name>AnalysisLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Common.Tests\Common.Tests.csproj">
+      <Project>{0aa1a46d-caec-4508-aaca-970a9062022a}</Project>
+      <Name>Common.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{53e611e8-c88c-4fbb-9e91-535dabf5f16d}</Project>
       <Name>Common</Name>

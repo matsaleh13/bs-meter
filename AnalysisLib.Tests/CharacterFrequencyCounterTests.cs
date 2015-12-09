@@ -1,4 +1,4 @@
-﻿using Common;
+﻿using Common.Tests;
 using NUnit.Framework;
 
 namespace AnalysisLib.Tests
@@ -7,14 +7,6 @@ namespace AnalysisLib.Tests
     public class CharacterFrequencyCounterTests : CharacterCounterTests
     {
         CharacterCounter _all;
-
-        public static void AreNearlyEqual(float expected, float actual)
-        {
-            if (!Util.NearlyEqual(expected, actual))
-            {
-                throw new AssertionException(string.Format("Expected: {0:G17}\nBut was: {1:G17}", expected, actual));
-            }
-        }
 
         /// NOTE: don't use [SetUp] attribute with virtual.
         public override void SetUp()
@@ -32,13 +24,13 @@ namespace AnalysisLib.Tests
             _counter.Increment();
 
             var percentCounter = (CharacterFrequencyCounter)_counter;
-            AreNearlyEqual(0.30f, percentCounter.Frequency);
+            AssertUtils.AreNearlyEqual(0.30f, percentCounter.Frequency);
 
             _counter.Increment(10);
-            AreNearlyEqual(1.30f, percentCounter.Frequency);
+            AssertUtils.AreNearlyEqual(1.30f, percentCounter.Frequency);
 
             _counter.Decrement(5);
-            AreNearlyEqual(0.80f, percentCounter.Frequency);
+            AssertUtils.AreNearlyEqual(0.80f, percentCounter.Frequency);
         }
 
     }
