@@ -34,6 +34,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence", "Persistence\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistence.Tests", "Persistence.Tests\Persistence.Tests.csproj", "{3A20A119-1019-4211-A32B-AF7C22D3F0A0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{8BBB32E2-5F70-4263-9E3E-50BF0E096788}"
+	ProjectSection(SolutionItems) = preProject
+		docker\bs-meter-dev-address.txt = docker\bs-meter-dev-address.txt
+		docker\bs-meter-dev.bat = docker\bs-meter-dev.bat
+		docker\corpus.env = docker\corpus.env
+		docker\create_redis_container.bat = docker\create_redis_container.bat
+		docker\start_machine.bat = docker\start_machine.bat
+		docker\start_redis_container.bat = docker\start_redis_container.bat
+		docker\stop_machine.bat = docker\stop_machine.bat
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
