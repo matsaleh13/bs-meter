@@ -1,5 +1,7 @@
 ﻿using AnalysisModel;
+using Common;
 using DataAccess.Interfaces;
+using Persistence;
 using SearchEngine.Interfaces;
 using System;
 using System.Data.HashFunction;
@@ -17,7 +19,6 @@ namespace SearchEngine
     {
         readonly int _blockSize;
         readonly IRepositoryAsync<Document> _repository;
-        readonly IHashFunctionAsync _hash = new xxHash();    // non-crypto hash; defaults init=0, size=32 bits
 
         public DocumentLoaderAsync(IRepositoryAsync<Document> repository, int blockSize=4096)
         {
@@ -25,31 +26,14 @@ namespace SearchEngine
             _blockSize = blockSize;
         }
 
+
         /// <summary>
-        /// Utility method that fills a StringBuilder
+        /// Load a single document from the local file system into the corpus.
         /// </summary>
-        /// <param name="data">Stream containing document data.</param>
-        /// <returns>Content of the stream as a string.</returns>
-        private async Task<string> ReadStreamAsync(Stream data)
-        {
-            var buffer = new char[_blockSize];
-            var builder = new StringBuilder();
-
-            using (var reader = new StreamReader(data))
-            {
-                while (!reader.EndOfStream)
-                {
-                    // StreamReader.ReadAsync() returns number of *chars* read, not number of bytes, in 
-                    // spite of what the API docs say. I read the code (MW 2015.11.06)
-                    var charsRead = await reader.ReadAsync(buffer, 0, _blockSize).ConfigureAwait(false);
-                    builder.Append(buffer, 0, charsRead);
-                }
-            }
-
-            return builder.ToString();
-        }
-
-
+        /// <param name="path">Path to the document in the local file system.</param>
+        /// <param name="contentType">MIME type/media type of the contents to be loaded.
+        /// If provided, this will override any content type inferred by the framework.</param>
+        /// <returns>True if successful, false otherwise.</returns>
         public async Task<bool> LoadAsync(string path, string contentType = null)
         {
             var fullPath = Path.GetFullPath(path);
@@ -57,49 +41,41 @@ namespace SearchEngine
             return await LoadAsync(new Uri(string.Format("file:///{0}", fullPath)), contentType);
         }
 
+        /// <summary>
+        /// Load a single document identified by a URI into the corpus.
+        /// The document may be anywhere in the universe.
+        /// </summary>
+        /// <param name="resource">Uri that identifies the document to be loaded.</param>
+        /// <param name="contentType">MIME type/media type of the contents to be loaded.
+        /// If provided, this will override any content type inferred by the framework.</param>
+        /// <returns>True if successful, false otherwise.</returns>
         public async Task<bool> LoadAsync(Uri resource, string contentType = null)
         {
             using (var response = await WebRequest.Create(resource).GetResponseAsync().ConfigureAwait(false))
             {
                 using (var data = response.GetResponseStream())
                 {
-                    var content = await ReadStreamAsync(data).ConfigureAwait(false);
+                    var content = await StreamUtils.ReadStreamAsync(data).ConfigureAwait(false);
 
-                    // Bah, have to iterate over the entire data again.
-                    // I don't know any other way to do this right now.
-                    // TODO: DRY, and maybe a better place for this.
-                    var hash = _hash.ComputeHash(Encoding.UTF8.GetBytes(content));
-
-                    var document = new Document()
-                    {
-                        Hash = BitConverter.ToString(hash),
-                        Source = resource,
-                        ContentType = contentType ?? response.ContentType,
-                        ContentLength = response.ContentLength,
-                        Content = content,
-                    };
+                    Document document = DocumentFactory.CreateDocument(resource, content, contentType ?? response.ContentType, response.ContentLength);
 
                     return await _repository.AddAsync(document).ConfigureAwait(false);
                 }
             }
         }
 
+        /// <summary>
+        /// Load a single document from a stream into the corpus.
+        /// </summary>
+        /// <param name="stream">A stream that provides access to the document's contents.</param>
+        /// <param name="contentType">MIME type/media type of the contents to be loaded.
+        /// If provided, this will override any content type inferred by the framework.</param>
+        /// <returns>True if successful, false otherwise.</returns>
         public async Task<bool> LoadAsync(Stream data, string contentType=null)
         {
-            var content = await ReadStreamAsync(data).ConfigureAwait(false);
+            var content = await StreamUtils.ReadStreamAsync(data).ConfigureAwait(false);
 
-            // Bah, have to iterate over the entire data again.
-            // I don't know any other way to do this right now.
-            // TODO: DRY, and maybe a better place for this.
-            var hash = _hash.ComputeHash(Encoding.UTF8.GetBytes(content));
-
-            var document = new Document()
-            {
-                Hash = BitConverter.ToString(hash),
-                ContentType = contentType ?? "",
-                ContentLength = content.Length,
-                Content = content,
-            };
+            Document document = DocumentFactory.CreateDocument(content, contentType, content.Length);
 
             return await _repository.AddAsync(document).ConfigureAwait(false);
         }

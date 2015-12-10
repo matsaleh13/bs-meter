@@ -22,12 +22,14 @@ namespace AnalysisModel
 
         /// <summary>
         /// The URI of the original source of the document, if available.
+        /// Must be a valid URI, null, or empty string.
         /// </summary>
-        public Uri Source { get; set; }
+        public string Source { get; set; }
 
         /// <summary>
         /// The document's media type as would be represented in the
         /// HTTP Content-type header.
+        /// May be null or empty string if not set or unknown.
         /// </summary>
         public string ContentType { get; set; }
 
@@ -41,5 +43,42 @@ namespace AnalysisModel
         /// The data of the document contents in raw form.
         /// </summary>
         public string Content { get; set; }
+
+
+
+
+        #region Comparison
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+
+            Document doc = obj as Document;
+            if (doc == null) return false;
+
+            return Equals(doc);
+        }
+
+
+        public bool Equals(Document doc)
+        {
+            if (doc == null) return false;
+
+            return (Equals(Key, doc.Key)) &&
+                   (Equals(Hash, doc.Hash)) &&
+                   (Equals(Source, doc.Source)) &&
+                   (Equals(ContentType, doc.ContentType)) &&
+                   (Equals(ContentLength, doc.ContentLength)) &&
+                   (Equals(Content, doc.Content));
+        }
+
+        public override int GetHashCode() => Key.GetHashCode() ^
+                                             Hash.GetHashCode() ^
+                                             Source.GetHashCode() ^
+                                             ContentType.GetHashCode() ^
+                                             ContentLength.GetHashCode() ^
+                                             Content.GetHashCode();
+
+        #endregion
     }
 }
