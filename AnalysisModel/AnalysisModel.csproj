@@ -55,6 +55,7 @@
     <Compile Include="CharacterStats.cs" />
     <Compile Include="Document.cs" />
     <Compile Include="DocumentAnalysisResult.cs" />
+    <Compile Include="Partials\Document.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

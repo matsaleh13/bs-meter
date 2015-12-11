@@ -7,7 +7,7 @@ namespace AnalysisModel
     /// <summary>
     /// Represents a single document in the corpus.
     /// </summary>
-    public class Document : IEntity
+    public partial class Document : IEntity
     {
         /// <summary>
         /// The unique key for this document.
@@ -44,41 +44,5 @@ namespace AnalysisModel
         /// </summary>
         public string Content { get; set; }
 
-
-
-
-        #region Comparison
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null) return false;
-
-            Document doc = obj as Document;
-            if (doc == null) return false;
-
-            return Equals(doc);
-        }
-
-
-        public bool Equals(Document doc)
-        {
-            if (doc == null) return false;
-
-            return (Equals(Key, doc.Key)) &&
-                   (Equals(Hash, doc.Hash)) &&
-                   (Equals(Source, doc.Source)) &&
-                   (Equals(ContentType, doc.ContentType)) &&
-                   (Equals(ContentLength, doc.ContentLength)) &&
-                   (Equals(Content, doc.Content));
-        }
-
-        public override int GetHashCode() => Key.GetHashCode() ^
-                                             Hash.GetHashCode() ^
-                                             Source.GetHashCode() ^
-                                             ContentType.GetHashCode() ^
-                                             ContentLength.GetHashCode() ^
-                                             Content.GetHashCode();
-
-        #endregion
     }
 }

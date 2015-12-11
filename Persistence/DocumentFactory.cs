@@ -1,4 +1,5 @@
 ﻿using AnalysisModel;
+using DataAccess;
 using System;
 using System.Data.HashFunction;
 using System.Text;
@@ -8,6 +9,8 @@ namespace Persistence
     public static class DocumentFactory
     {
         static readonly IHashFunctionAsync _hash = new xxHash();    // non-crypto hash; defaults init=0, size=32 bits
+
+        static readonly KeyScope _scope = new KeyScope("documents");
 
         /// <summary>
         /// Creates an instance of the Document model class, populating it with data provided.
@@ -23,10 +26,12 @@ namespace Persistence
             // Bah, have to iterate over the entire data again.
             // I don't know any other way to do this right now.
             var hash = _hash.ComputeHash(Encoding.UTF8.GetBytes(content));
+            var hashString = BitConverter.ToString(hash);
 
             var document = new Document()
             {
-                Hash = BitConverter.ToString(hash),
+                Key = KeyFactory.Instance.CreateKey(_scope, hashString),
+                Hash = hashString,
                 Source = uri?.AbsoluteUri,
                 ContentType = contentType,
                 ContentLength = contentLength,

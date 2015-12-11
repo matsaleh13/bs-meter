@@ -60,10 +60,8 @@ namespace Persistence.Tests
             // Create the test documement first, so we can create a key from the hash.
             var document = DocumentFactory.CreateDocument(TestDocument, "text/plain", TestDocument.Length);
 
-            var key = KeyFactory.Instance.CreateKey("docs", document.Hash);
-
             // Nothing with that key.
-            var result = Task.Run(async () => { return await _repository.GetAsync(key).ConfigureAwait(false); });
+            var result = Task.Run(async () => { return await _repository.GetAsync(document.Key).ConfigureAwait(false); });
 
             Assert.IsNull(result.Result);
 
@@ -71,7 +69,7 @@ namespace Persistence.Tests
             _client.Add(document.Key, document);    // sync, for grins
 
             // Now get it again
-            result = Task.Run(async () => { return await _repository.GetAsync(key).ConfigureAwait(false); });
+            result = Task.Run(async () => { return await _repository.GetAsync(document.Key).ConfigureAwait(false); });
             var added = result.Result;
 
             Assert.IsNotNull(added);
