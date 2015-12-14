@@ -80,6 +80,7 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="KeyConverter.cs" />
     <Compile Include="KeyFactory.cs" />
     <Compile Include="RedisConnectionManager.cs" />
     <Compile Include="DataAccessException.cs" />

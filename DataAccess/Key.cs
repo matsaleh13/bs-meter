@@ -1,16 +1,25 @@
-﻿using StackExchange.Redis;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using StackExchange.Redis;
 using StackExchange.Redis.Extensions.Core;
 using System;
+using System.Runtime.Serialization;
 
 namespace DataAccess
 {
-    /// <summary>
+   /// <summary>
     /// Responsible for abstracting the contents of a Redis key and its components.
     /// A Redis key is basically a URI, without a scheme, and which uses a separator
     /// defined by KeyScope.Separator.
     /// </summary>
+    [DataContract]
+    [JsonConverter(typeof(KeyConverter))]
     public class Key
     {
+        [DataMember]
+        public string Value { get; }
+
+        #region Ctors
         /// <summary>
         /// Parameterless ctor for use by (de)serializers.
         /// </summary>
@@ -29,8 +38,10 @@ namespace DataAccess
             Value = key;
         }
 
+        #endregion
 
-        public string Value { get; }
+        #region Overrides and Operators
+
         public override string ToString() => Value ?? "<null>";
 
         public override bool Equals(object obj)
@@ -77,5 +88,7 @@ namespace DataAccess
         /// </summary>
         /// <param name="key">The RedisKey to convert.</param>
         public static implicit operator Key(RedisKey key) => new Key(key);
+
+        #endregion
     }
 }
